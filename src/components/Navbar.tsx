@@ -2,7 +2,7 @@
 
 import React, { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Sparkles, BookOpen, Flame, X } from "lucide-react";
+import { BrainCircuit, BookOpen, Flame, X } from "lucide-react";
 import { BI_WEEKLY_META, BI_WEEKLY_PULSE_FEED } from "@/data/curriculum";
 import { getTotalXp, subscribeToProgress } from "@/lib/progress";
 
@@ -14,16 +14,24 @@ export default function Navbar() {
     <>
       <header className="sticky top-0 z-40 w-full bg-[#FAFAFA]/90 backdrop-blur-md border-b border-[#E2E8F0]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-[#4F46E5] flex items-center justify-center text-white shadow-sm">
-              <Sparkles className="w-5 h-5" />
+          <Link href="/" className="flex items-center gap-3 group select-none">
+            <div className="relative flex items-center justify-center">
+              <div
+                className="absolute -inset-1 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-cyan-400 opacity-25 blur-[3px] group-hover:opacity-70 transition duration-300"
+                aria-hidden="true"
+              />
+              <div className="relative w-9 h-9 rounded-xl bg-gradient-to-b from-slate-800 to-slate-950 p-[1px] shadow-sm group-hover:scale-105 transition-transform duration-200">
+                <div className="w-full h-full rounded-[11px] bg-[#090D16] flex items-center justify-center border border-white/10 group-hover:border-indigo-400/50 transition-colors">
+                  <BrainCircuit className="w-5 h-5 text-indigo-400 group-hover:text-cyan-300 transition-colors duration-200" />
+                </div>
+              </div>
             </div>
-            <div>
-              <span className="font-bold text-[#0F172A] tracking-tight text-base block leading-none">
+            <div className="flex flex-col">
+              <span className="font-extrabold text-[17px] tracking-tight text-[#0F172A] leading-none group-hover:text-indigo-600 transition-colors">
                 AI Fluency
               </span>
-              <span className="hidden sm:block text-[11px] text-slate-500 font-medium">
-                Zero Jargon • Intuition First
+              <span className="hidden sm:block text-[11px] text-slate-400 font-medium tracking-tight mt-0.5">
+                Intuition from Scratch
               </span>
             </div>
           </Link>

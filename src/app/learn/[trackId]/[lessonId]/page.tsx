@@ -28,13 +28,20 @@ function findLesson(trackId: string, lessonId: string) {
   return { track, lessonIndex, lesson: track.lessons[lessonIndex] };
 }
 
-export async function generateMetadata({ params }: PageProps<"/learn/[trackId]/[lessonId]">) {
+interface LessonPageProps {
+  params: Promise<{
+    trackId: string;
+    lessonId: string;
+  }>;
+}
+
+export async function generateMetadata({ params }: LessonPageProps) {
   const { trackId, lessonId } = await params;
   const found = findLesson(trackId, lessonId);
   return { title: found ? `${found.lesson.title} | AI Fluency` : "Lesson not found | AI Fluency" };
 }
 
-export default async function LessonPage({ params }: PageProps<"/learn/[trackId]/[lessonId]">) {
+export default async function LessonPage({ params }: LessonPageProps) {
   const { trackId, lessonId } = await params;
   const found = findLesson(trackId, lessonId);
   if (!found) notFound();

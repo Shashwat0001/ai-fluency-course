@@ -212,9 +212,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="mt-auto border-t border-[#E2E8F0] bg-white py-8 px-4 text-center text-xs text-slate-500">
-        <p className="font-semibold text-[#0F172A]">AI Fluency from Scratch — Built for Non-Technical Intuition</p>
-<p className="mt-1">AI Pulse last updated {BI_WEEKLY_META.lastUpdated} • Your XP is saved in this browser only</p>
+      <footer className="mt-auto border-t border-[#E2E8F0] bg-white py-10 px-4 text-center text-xs text-slate-500">
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="w-6 h-6 rounded-lg bg-slate-950 flex items-center justify-center border border-white/10 shadow-sm">
+            <BrainCircuit className="w-3.5 h-3.5 text-indigo-400" />
+          </div>
+          <span className="font-bold text-sm tracking-tight text-[#0F172A]">AI Fluency</span>
+        </div>
+        <p className="font-medium text-slate-600">Intuition-First Learning for Everyone</p>
+        <p className="mt-1">AI Pulse last updated {BI_WEEKLY_META.lastUpdated} · Progress saved locally in this browser</p>
       </footer>
     </div>
   );

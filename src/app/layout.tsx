@@ -16,9 +16,18 @@ export const metadata: Metadata = {
   title: "AI Fluency from Scratch",
   description:
     "An intuition-first AI course for people with zero technical background: everyday analogies, real engineering conversations, and quick checks.",
+  openGraph: {
+    title: "AI Fluency from Scratch",
+    description:
+      "An intuition-first AI course for people with zero technical background: everyday analogies, real engineering conversations, and quick checks.",
+  },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
