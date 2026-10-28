@@ -1,26 +1,41 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Display: characterful variable grotesque for headlines.
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Body: highly legible on small screens.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
+
+// Accent: an editorial serif italic for the odd emphasised word.
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+});
+
+const DESCRIPTION =
+  "Learn AI from zero in 5-minute lessons built for India: no code, no maths, just clear ideas you can use at work tomorrow.";
 
 export const metadata: Metadata = {
   title: "AI Fluency from Scratch",
-  description:
-    "An intuition-first AI course for people with zero technical background: everyday analogies, real engineering conversations, and quick checks.",
+  description: DESCRIPTION,
   openGraph: {
     title: "AI Fluency from Scratch",
-    description:
-      "An intuition-first AI course for people with zero technical background: everyday analogies, real engineering conversations, and quick checks.",
+    description: DESCRIPTION,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#fbfaf7",
 };
 
 export default function RootLayout({
@@ -31,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${inter.variable} ${instrument.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

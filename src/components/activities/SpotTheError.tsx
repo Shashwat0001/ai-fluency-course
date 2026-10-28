@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { SearchCheck } from "lucide-react";
 import ActivityCard from "./ActivityCard";
+import { RichText } from "@/components/lesson/Glossary";
 import type { SpotTheErrorActivity } from "@/data/types";
 
 export default function SpotTheError({ activity }: { activity: SpotTheErrorActivity }) {
@@ -24,19 +25,19 @@ export default function SpotTheError({ activity }: { activity: SpotTheErrorActiv
 
   return (
     <ActivityCard label="Spot the Error" title={activity.title} icon={<SearchCheck className="w-5 h-5"/>}>
-      <p className="text-base text-slate-700 leading-relaxed">{activity.instructions}</p>
+      <p className="text-base text-ink-700 leading-relaxed"><RichText text={activity.instructions}/></p>
 
-      <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 p-4">
-        <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Someone asked</p>
-        <p className="mt-1 text-sm font-semibold text-[#0F172A]">{activity.question}</p>
-        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-slate-500">The AI replied (tap the suspicious sentences)</p>
-        <p className="mt-1 text-sm leading-7 text-[#0F172A]">
+      <div className="mt-4 rounded-xl bg-ink-50 border border-ink-200 p-4">
+        <p className="text-xs font-bold uppercase tracking-wider text-ink-500">Someone asked</p>
+        <p className="mt-1 text-sm font-semibold text-ink">{activity.question}</p>
+        <p className="mt-4 text-xs font-bold uppercase tracking-wider text-ink-500">The AI replied (tap the suspicious sentences)</p>
+        <p className="mt-1 text-sm leading-7 text-ink">
           {activity.sentences.map((sentence, index) => {
             const isFlagged = flagged.has(index);
-            let style = isFlagged ? "bg-amber-200" : "hover:bg-indigo-100";
+            let style = isFlagged ? "bg-marigold-200" : "hover:bg-brand-100";
             if (checked) {
-              if (sentence.isError) style = isFlagged ? "bg-emerald-200" : "bg-rose-200";
-              else style = isFlagged ? "bg-slate-300 line-through" : "";
+              if (sentence.isError) style = isFlagged ? "bg-mint-200" : "bg-coral-200";
+              else style = isFlagged ? "bg-ink-300 line-through" : "";
             }
             return (
               <span
@@ -57,26 +58,26 @@ export default function SpotTheError({ activity }: { activity: SpotTheErrorActiv
       {!checked ? (
         <button
           onClick={() => setChecked(true)}
-          className="mt-4 px-5 py-2.5 rounded-xl bg-[#4F46E5] text-white text-sm font-semibold hover:bg-[#4338CA] cursor-pointer"
+          className="mt-4 px-5 py-2.5 rounded-xl bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 cursor-pointer"
         >
           Check my answers ({flagged.size} flagged)
         </button>
       ) : (
         <div className="mt-4 space-y-3">
-          <p className="text-sm font-bold text-[#0F172A]">
+          <p className="text-sm font-bold text-ink">
             You caught {caught} of {errorCount} errors{falseAlarms > 0 ? `, with ${falseAlarms} false alarm${falseAlarms > 1 ? "s" : ""}` : ""}.
           </p>
           {activity.sentences.map((sentence) =>
             sentence.isError ? (
-              <div key={sentence.text} className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-sm leading-relaxed">
-                <p className="font-semibold text-rose-900">&ldquo;{sentence.text}&rdquo;</p>
-                <p className="mt-1 text-rose-900">{sentence.why}</p>
+              <div key={sentence.text} className="p-3 rounded-xl bg-coral-50 border border-coral-200 text-sm leading-relaxed">
+                <p className="font-semibold text-coral-900">&ldquo;{sentence.text}&rdquo;</p>
+                <p className="mt-1 text-coral-900"><RichText text={sentence.why}/></p>
               </div>
             ) : null
           )}
           <button
             onClick={() => { setFlagged(new Set()); setChecked(false); }}
-            className="text-sm font-semibold text-[#4F46E5] cursor-pointer"
+            className="text-sm font-semibold text-brand-600 cursor-pointer"
           >
             Try again
           </button>

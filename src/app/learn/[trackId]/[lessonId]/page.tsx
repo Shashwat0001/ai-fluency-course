@@ -39,7 +39,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const next = track.lessons[lessonIndex + 1];
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] text-[#0F172A] flex flex-col font-sans">
+    <div className="min-h-screen bg-paper text-ink flex flex-col font-sans">
       <Navbar/>
       <LessonPlayer
         lesson={lesson}

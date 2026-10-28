@@ -13,6 +13,42 @@ How to write lessons and publish the AI Pulse so every page meets the same bar.
 
 New lessons appear on the site automatically. Add the lesson object to a track's `lessons` array and that's it.
 
+## Voice and style
+
+Write like a warm, witty friend who works in tech, explaining things over chai. Confident, never condescending.
+
+- **Use "you", active voice and short sentences** (mostly under 20 words).
+- **Be concrete.** Prefer real examples to abstract statements, and write money as ₹, lakh and crore.
+- **Add Indian flavour only where it's natural:** chai, IRCTC, cricket, board exams, Swiggy. No forced slang.
+- **Length limits:**
+  - Titles: 7 words or fewer.
+  - Subtitles: 10 words or fewer.
+  - Big-idea headline: 18 words or fewer.
+  - Paragraphs: 70 words or fewer.
+- **Quiz feedback** opens with a verdict ("Exactly.", "Not quite.") and then explains why, in 30 words or fewer.
+- **Never write:** delve, unlock, elevate, leverage, game-changer, seamless, robust, "let's dive in".
+
+## Emphasis: making key information stand out
+
+Lesson text supports two bits of markup:
+
+| Write | Shows as | Use it for |
+| --- | --- | --- |
+| `**words**` | **bold** | 1–3 phrases per paragraph: a key term where it's first defined, the rule, the number that matters |
+| `==words==` | a marigold highlighter stripe | THE one line to remember. At most one per field and about 4 per lesson |
+
+**Markup works in long-form text only.** Allowed fields:
+- big-idea headline and explanation
+- analogy metaphor
+- meeting quotes and their plain-English line
+- use-it-at-work and use-it-to-learn text
+- the jargon card's one-liner
+- quiz questions and feedback
+- the explanation fields inside activities
+- Pulse summaries and takeaways
+
+**Titles, buttons, answer options, prompts to copy and labels stay plain**; markup there shows up as literal asterisks. If everything is bold, nothing is.
+
 ## The lesson checklist
 
 A lesson isn't ready until every box is ticked.
@@ -75,3 +111,28 @@ About 90 minutes per edition. Claude can draft it; a person must check every lin
 ## Before you merge anything
 
 Open the Vercel preview link on a phone, click through every changed lesson, answer each quiz (including a wrong answer), and use every activity once.
+
+## Design system (for anyone touching the code)
+
+- **Colours:** all colours live in `src/app/globals.css` as named tokens. Components use these names; never a raw hex code.
+
+  | Token | Colour | Used for |
+  | --- | --- | --- |
+  | `brand` | electric iris | buttons, links, progress |
+  | `ink` | warm neutrals | text and borders |
+  | `paper` | off-white | the page background |
+  | `marigold` | marigold | highlights and XP |
+  | `mint` | mint | correct answers |
+  | `coral` | coral | wrong answers |
+
+- **Fonts** (loaded in `src/app/layout.tsx`):
+  - Bricolage Grotesque for headlines (`font-display`; h1–h3 use it automatically)
+  - Inter for body text
+  - Instrument Serif italic for the occasional accent word (`font-serif italic`)
+- **Signature effects:**
+  - `btn-pop`: a press-down primary button
+  - `tile-pop`: a press-down answer tile
+  - `.highlight`: the highlighter stripe
+  - `.glossary-term`: the dotted underline on jargon
+- **Logo:** `src/components/Logo.tsx`; the same drawing is the browser-tab icon in `src/app/icon.svg`.
+- **Creator details** (name, LinkedIn, email, photo): `src/data/creator.ts`. The photo is `public/shashwat.jpg`.
