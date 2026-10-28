@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import { CURRICULUM_TRACKS, BI_WEEKLY_META } from "@/data/curriculum";
+import { CURRICULUM_TRACKS } from "@/data/curriculum";
 import {
   Sparkles,
   ArrowRight,
@@ -158,29 +158,53 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CURRICULUM_TRACKS.map((track) => (
-            <Link
-              href={`/learn/${track.id}/${track.lessons[0]?.id || "intro"}`}
-              key={track.id}
-              className="p-6 rounded-2xl bg-white border border-[#E2E8F0] hover:border-slate-300 transition-all flex flex-col justify-between hover:shadow-lg cursor-pointer"
-            >
+          {CURRICULUM_TRACKS.map((track) => {
+            const firstLesson = track.lessons[0];
+            const cardBody = (
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
                     {getTrackIcon(track.icon)}
                   </div>
-                  <span className="text-xs font-semibold text-slate-500">{track.lessons.length} Lessons</span>
+                  <span className="text-xs font-semibold text-slate-500">
+                    {firstLesson
+                      ? `${track.lessons.length} ${track.lessons.length === 1 ? "Lesson" : "Lessons"}`
+                      : "In Production"}
+                  </span>
                 </div>
                 <h3 className="text-lg font-bold text-[#0F172A]">{track.title}</h3>
                 <p className="text-sm text-slate-600 mt-2 leading-relaxed">{track.description}</p>
               </div>
+            );
 
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#4F46E5]">
-                <span>Start Learning</span>
-                <ArrowRight className="w-4 h-4"/>
-              </div>
-            </Link>
-          ))}
+            if (!firstLesson) {
+              return (
+                <div
+                  key={track.id}
+                  className="p-6 rounded-2xl bg-white/60 border border-dashed border-[#E2E8F0] flex flex-col justify-between"
+                >
+                  {cardBody}
+                  <div className="mt-6 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-400">
+                    <span>Coming Soon</span>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                href={`/learn/${track.id}/${firstLesson.id}`}
+                key={track.id}
+                className="p-6 rounded-2xl bg-white border border-[#E2E8F0] hover:border-slate-300 transition-all flex flex-col justify-between hover:shadow-lg cursor-pointer"
+              >
+                {cardBody}
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#4F46E5]">
+                  <span>Start Learning</span>
+                  <ArrowRight className="w-4 h-4"/>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

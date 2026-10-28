@@ -53,6 +53,7 @@ export interface Track {
   title: string;
   description: string;
   badgeName: string;
+  icon: string;
   estimatedTime: string;
   isUpdatedThisFortnight?: boolean;
   lessons: Lesson[];
@@ -110,6 +111,7 @@ export const CURRICULUM_TRACKS: Track[] = [
   {
     id: "track-1-foundations",
     number: 1,
+    icon: "BrainCircuit",
     title: "What Actually Is AI? (Foundations Without Math)",
     description:
       "Understand the core shift from traditional rule-based software to pattern-recognizing AI using kitchen and library analogies.",
@@ -208,6 +210,7 @@ export const CURRICULUM_TRACKS: Track[] = [
   {
     id: "track-2-jargon-buster",
     number: 2,
+    icon: "Layers",
     title: "Essential AI Terminology & Mental Models",
     description:
       "Master LLMs, Tokens, Context Windows, RAG, Fine-Tuning, and Vibe Coding without memorizing a single textbook definition.",
@@ -465,6 +468,7 @@ export const CURRICULUM_TRACKS: Track[] = [
   {
     id: "track-3-ai-players",
     number: 3,
+    icon: "Sparkles",
     title: "The AI Landscape: Players, Competitors & Stack",
     description:
       "Compare OpenAI, Anthropic, Google, Meta, xAI, and DeepSeek—and know who does what best in a tech conversation.",
@@ -558,6 +562,7 @@ export const CURRICULUM_TRACKS: Track[] = [
   {
     id: "track-4-modern-world",
     number: 4,
+    icon: "Bot",
     title: "AI for Work, Learning & the Modern World",
     description:
       "Practical playbooks for automating busywork, mastering Socratic learning, and spotting where AI creates real business ROI.",
@@ -568,6 +573,7 @@ export const CURRICULUM_TRACKS: Track[] = [
   {
     id: "track-5-tech-fluency",
     number: 5,
+    icon: "Zap",
     title: "Speaking 'Tech': PM & Engineer Simulations",
     description:
       "Real-world dialogue breakdowns on Latency, Hallucinations, Evals, and API unit economics.",
@@ -578,6 +584,7 @@ export const CURRICULUM_TRACKS: Track[] = [
   {
     id: "track-6-biweekly-pulse",
     number: 6,
+    icon: "Globe2",
     title: "The Bi-Weekly AI Pulse (Living Track)",
     description:
       "Refreshed every 14 days so your AI fluency never goes stale. New models, new terms, and shifting rankings.",
