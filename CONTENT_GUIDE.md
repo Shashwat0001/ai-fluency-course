@@ -23,7 +23,7 @@ A lesson isn't ready until every box is ticked.
 - [ ] **Indian settings** in dialogues and examples: Bengaluru stand-ups, Pune startups, ₹ amounts in lakh and crore.
 - [ ] **1–3 activities** in different formats (see below). Pick what fits the topic, and vary formats from one lesson to the next so learners don't hit the same exercise repeatedly.
 - [ ] **3–5 quiz questions,** each wrong option with feedback that explains why it's wrong, not just "Incorrect".
-- [ ] **Every new term is defined** in the same lesson, at first use.
+- [ ] **Every new term is defined** in the same lesson, at first use, and added to the jargon dictionary.
 - [ ] **Every checkable fact has a source** in `sources`. Prefer official docs, pricing pages and government sites, then Wikipedia or major news. Open every link before adding it.
 - [ ] **Anything that changes fast** (model names, prices, rankings, offers) gets `isUpdatedBiWeekly: true`, which shows the "accurate as of" notice.
 - [ ] **`lastUpdated`** is set to today.
@@ -49,6 +49,15 @@ Put these in a lesson's `activities` array. Exact fields are in `types.ts`; the 
 | This Edition | `pulseFeed` | Showing the current AI Pulse inside a lesson | `pulse-edition-oct-2026` |
 
 The classic sections (`analogy`, `techConversation`, `realWorldApplication`, `jargonCard`) are optional. Skip the ones an activity already covers; for example, a `decodeChat` replaces `techConversation`.
+
+## The jargon dictionary (tap-to-define)
+
+`src/data/glossary.ts` holds plain-English definitions. The first time a listed term appears in a block of lesson text, it gets a dotted underline that learners tap to see the meaning.
+
+- **Introduce a new term in a lesson? Add it here too.** One or two short sentences, with no other jargon in the definition.
+- Use `aliases` for plurals and other spellings (`tokens`, `fine-tuned`).
+- Set `caseSensitive: true` for acronyms, so `RAG` doesn't underline the word "rag".
+- The term's own lesson still defines it properly. The dictionary is a safety net for every other lesson.
 
 ## Publishing the AI Pulse (every two weeks)
 
