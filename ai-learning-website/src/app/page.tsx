@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { CURRICULUM_TRACKS, BI_WEEKLY_META } from "@/data/curriculum";
+import { completeLesson } from "@/lib/progress";
 import {
   Sparkles,
   ArrowRight,
@@ -50,7 +51,7 @@ export default function HomePage() {
       <section className="relative pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-[#4F46E5] text-xs font-semibold uppercase tracking-wider mb-6">
           <Sparkles className="w-3.5 h-3.5"/>
-<span>Bi-Weekly Refresh Cycle: Active</span>
+<span>Latest AI Pulse: {BI_WEEKLY_META.lastUpdated}</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-[#0F172A] leading-tight sm:leading-none">
@@ -119,7 +120,10 @@ export default function HomePage() {
                 return (
                   <button
                     key={option.id}
-                    onClick={() => setSelectedDemoAnswer(index)}
+                    onClick={() => {
+                      setSelectedDemoAnswer(index);
+                      if (option.isCorrect) completeLesson(demoLesson.id, demoLesson.xpReward);
+                    }}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between gap-4 cursor-pointer ${btnStyle}`}
                   >
                     <span className="text-sm font-medium text-[#0F172A]">{option.text}</span>
@@ -158,35 +162,59 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {CURRICULUM_TRACKS.map((track) => (
-            <Link
-              href={`/learn/${track.id}/${track.lessons[0]?.id || "intro"}`}
-              key={track.id}
-              className="p-6 rounded-2xl bg-white border border-[#E2E8F0] hover:border-slate-300 transition-all flex flex-col justify-between hover:shadow-lg cursor-pointer"
-            >
+          {CURRICULUM_TRACKS.map((track) => {
+            const firstLesson = track.lessons[0];
+            const cardBody = (
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
                     {getTrackIcon(track.icon)}
                   </div>
-                  <span className="text-xs font-semibold text-slate-500">{track.lessons.length} Lessons</span>
+                  <span className="text-xs font-semibold text-slate-500">
+                    {firstLesson
+                      ? `${track.lessons.length} ${track.lessons.length === 1 ? "Lesson" : "Lessons"}`
+                      : "In Production"}
+                  </span>
                 </div>
                 <h3 className="text-lg font-bold text-[#0F172A]">{track.title}</h3>
                 <p className="text-sm text-slate-600 mt-2 leading-relaxed">{track.description}</p>
               </div>
+            );
 
-              <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#4F46E5]">
-                <span>Start Learning</span>
-                <ArrowRight className="w-4 h-4"/>
-              </div>
-            </Link>
-          ))}
+            if (!firstLesson) {
+              return (
+                <div
+                  key={track.id}
+                  className="p-6 rounded-2xl bg-white/60 border border-dashed border-[#E2E8F0] flex flex-col justify-between"
+                >
+                  {cardBody}
+                  <div className="mt-6 pt-4 border-t border-slate-100 text-xs font-semibold text-slate-400">
+                    <span>Coming Soon</span>
+                  </div>
+                </div>
+              );
+            }
+
+            return (
+              <Link
+                href={`/learn/${track.id}/${firstLesson.id}`}
+                key={track.id}
+                className="p-6 rounded-2xl bg-white border border-[#E2E8F0] hover:border-slate-300 transition-all flex flex-col justify-between hover:shadow-lg cursor-pointer"
+              >
+                {cardBody}
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#4F46E5]">
+                  <span>Start Learning</span>
+                  <ArrowRight className="w-4 h-4"/>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
       <footer className="mt-auto border-t border-[#E2E8F0] bg-white py-8 px-4 text-center text-xs text-slate-500">
         <p className="font-semibold text-[#0F172A]">AI Fluency from Scratch — Built for Non-Technical Intuition</p>
-<p className="mt-1">Bi-Weekly Curriculum Engine • Next Refresh: Coming Soon</p>
+<p className="mt-1">AI Pulse last updated {BI_WEEKLY_META.lastUpdated} • Your XP is saved in this browser only</p>
       </footer>
     </div>
   );
