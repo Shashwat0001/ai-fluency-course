@@ -7,9 +7,9 @@ How to write lessons and publish the AI Pulse so every page meets the same bar.
 
 | What | File |
 | --- | --- |
-| Track 1–6 lessons | `ai-learning-website/src/data/tracks/track-*.ts` (one file per track) |
-| AI Pulse edition | `ai-learning-website/src/data/pulse.ts` |
-| Shapes of everything (what fields exist) | `ai-learning-website/src/data/types.ts` |
+| Track 1–6 lessons | `src/data/tracks/track-*.ts` (one file per track) |
+| AI Pulse edition | `src/data/pulse.ts` |
+| Shapes of everything (what fields exist) | `src/data/types.ts` |
 
 New lessons appear on the site automatically. Add the lesson object to a track's `lessons` array and that's it.
 

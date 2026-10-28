@@ -1,0 +1,19 @@
+# Local tools kept next to the project (portable Node.js / Git for Windows).
+# They live on your own computer; GitHub doesn't need a copy.
+/node/
+/mingit/
+
+# Installed packages and build output
+node_modules/
+.next/
+.vercel
+next-env.d.ts
+*.tsbuildinfo
+
+# Secrets: keep real values out of GitHub; the template is fine
+.env*
+!.env.example
+
+# OS clutter
+.DS_Store
+Thumbs.db

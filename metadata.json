@@ -1,0 +1,6 @@
+{
+  "name": "AI Fluency from Scratch",
+  "description": "An intuition-first AI course for people with zero technical background: everyday analogies, real engineering conversations, and quick checks.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
