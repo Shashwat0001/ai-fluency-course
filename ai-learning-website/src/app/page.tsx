@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { CURRICULUM_TRACKS, BI_WEEKLY_META } from "@/data/curriculum";
-import { completeLesson } from "@/lib/progress";
 import {
   Sparkles,
   ArrowRight,
@@ -97,7 +96,7 @@ export default function HomePage() {
               <span className="text-xs font-bold uppercase tracking-wider">The Everyday Analogy</span>
             </div>
             <p className="text-base text-[#0F172A] leading-relaxed font-medium">
-              {demoLesson.analogy.metaphor}
+              {demoLesson.analogy?.metaphor}
             </p>
           </div>
 
@@ -120,10 +119,7 @@ export default function HomePage() {
                 return (
                   <button
                     key={option.id}
-                    onClick={() => {
-                      setSelectedDemoAnswer(index);
-                      if (option.isCorrect) completeLesson(demoLesson.id, demoLesson.xpReward);
-                    }}
+                    onClick={() => setSelectedDemoAnswer(index)}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between gap-4 cursor-pointer ${btnStyle}`}
                   >
                     <span className="text-sm font-medium text-[#0F172A]">{option.text}</span>
@@ -149,6 +145,15 @@ export default function HomePage() {
               >
                 {demoLesson.quiz[0].options[selectedDemoAnswer].analogyFeedback}
               </div>
+            )}
+
+            {selectedDemoAnswer !== null && (
+              <Link
+                href={`/learn/${demoTrack.id}/${demoLesson.id}`}
+                className="mt-4 inline-flex items-center gap-1.5 px-5 py-3 rounded-xl bg-[#4F46E5] text-white text-sm font-semibold hover:bg-[#4338CA]"
+              >
+                Finish the full lesson to earn {demoLesson.xpReward} XP <ArrowRight className="w-4 h-4"/>
+              </Link>
             )}
           </div>
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { Sparkles, BookOpen, Flame, X } from "lucide-react";
+import { Sparkles, BookOpen, Flame, X, ArrowUpRight } from "lucide-react";
 import { BI_WEEKLY_META, BI_WEEKLY_PULSE_FEED } from "@/data/curriculum";
 import { getTotalXp, subscribeToProgress } from "@/lib/progress";
 
@@ -92,6 +92,16 @@ export default function Navbar() {
                   <p className="mt-3 p-3 rounded-xl bg-emerald-50 text-sm text-emerald-900 leading-relaxed">
                     {item.analogyTakeaway}
                   </p>
+                  {item.source && (
+                    <a
+                      href={item.source.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#4F46E5]"
+                    >
+                      Source: {item.source.label} <ArrowUpRight className="w-3.5 h-3.5"/>
+                    </a>
+                  )}
                 </article>
               ))}
             </div>
