@@ -74,9 +74,9 @@ export default function CostCalculator({ activity }: { activity: CostCalculatorA
             (outputTokens / 1_000_000) * model.outputUsdPerMillion;
           const inr = usd * activity.usdToInr;
           return (
-            <div key={model.name} className="flex items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+            <div key={model.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
               <span className="text-sm font-semibold text-[#0F172A]">{model.name}</span>
-              <span className="text-right">
+              <span className="sm:text-right">
                 <span className="block text-lg font-extrabold text-[#0F172A]">{formatRupees(inr)}<span className="text-xs font-semibold text-slate-500"> /month</span></span>
                 <span className="block text-xs text-slate-500">{formatRupees(inr / monthlyMessages)} per message</span>
               </span>

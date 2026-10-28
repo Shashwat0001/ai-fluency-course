@@ -13,7 +13,7 @@ export default function ActivityCard({
   children: React.ReactNode;
 }) {
   return (
-    <section className="mt-6 p-6 rounded-2xl bg-white border-2 border-indigo-100">
+    <section className="p-6 rounded-2xl bg-white border-2 border-indigo-100">
       <div className="flex items-center gap-2 text-[#4F46E5]">
         {icon}
         <span className="text-xs font-bold uppercase tracking-wider">{label}</span>
