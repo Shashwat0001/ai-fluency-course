@@ -1,36 +1,180 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   AI Fluency design system
+   One place for colour, type and the few signature effects. Components use
+   these names (bg-brand-600, text-ink-500, font-display…), never raw hex.
+   ========================================================================== */
 
+/* Fonts come from next/font in layout.tsx */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Surfaces */
+  --color-paper: #fbfaf7; /* warm off-white page background */
+  --color-ink: #17161a; /* primary text */
+
+  /* Brand: electric iris. Buttons, links, progress, focus. */
+  --color-brand-50: #f3f1ff;
+  --color-brand-100: #e9e5ff;
+  --color-brand-200: #d4ccff;
+  --color-brand-300: #b4a6ff;
+  --color-brand-400: #8f7bff;
+  --color-brand-500: #6e56ff;
+  --color-brand-600: #5a3ff0;
+  --color-brand-700: #4a30d0;
+  --color-brand-800: #3b27a6;
+  --color-brand-900: #2e2280;
+  --color-brand-950: #1b1450;
+
+  /* Ink: warm neutrals for text, borders and quiet surfaces. 500+ passes AA on paper. */
+  --color-ink-50: #f8f7f5;
+  --color-ink-100: #f1efec;
+  --color-ink-200: #e5e2dd;
+  --color-ink-300: #d2cec7;
+  --color-ink-400: #a8a39b;
+  --color-ink-500: #6f6a63;
+  --color-ink-600: #57534d;
+  --color-ink-700: #423f3a;
+  --color-ink-800: #2b2926;
+  --color-ink-900: #17161a;
+  --color-ink-950: #0d0c10;
+
+  /* Marigold: the highlighter. Key lines, XP, "fast-moving" notes. */
+  --color-marigold-50: #fff8e6;
+  --color-marigold-100: #ffefc2;
+  --color-marigold-200: #ffe08a;
+  --color-marigold-300: #ffcf4d;
+  --color-marigold-400: #ffbf1f;
+  --color-marigold-500: #f5a700;
+  --color-marigold-600: #d18a00;
+  --color-marigold-700: #a66a00;
+  --color-marigold-800: #7a4d00;
+  --color-marigold-900: #523300;
+
+  /* Mint: correct answers and success. */
+  --color-mint-50: #ecfdf6;
+  --color-mint-100: #d1fae8;
+  --color-mint-200: #a6f2d2;
+  --color-mint-300: #6ee3b6;
+  --color-mint-400: #34cf96;
+  --color-mint-500: #12b47c;
+  --color-mint-600: #079164;
+  --color-mint-700: #087352;
+  --color-mint-800: #0a5b43;
+  --color-mint-900: #0a4a38;
+
+  /* Coral: wrong answers and errors. */
+  --color-coral-50: #fff1f2;
+  --color-coral-100: #ffe0e3;
+  --color-coral-200: #ffc6cc;
+  --color-coral-300: #ff9da8;
+  --color-coral-400: #ff6b7d;
+  --color-coral-500: #f43f5e;
+  --color-coral-600: #d92550;
+  --color-coral-700: #b51a43;
+  --color-coral-800: #93183d;
+  --color-coral-900: #7a1838;
+
+  --radius-card: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(23 22 26 / 0.04), 0 8px 24px -12px rgb(23 22 26 / 0.12);
+}
+
+@layer base {
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  ::selection {
+    background: var(--color-marigold-200);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Highlighter-pen effect for ==highlighted== lesson text. */
+.highlight {
+  color: inherit;
+  background: linear-gradient(transparent 45%, var(--color-marigold-300) 45%, var(--color-marigold-300) 92%, transparent 92%);
+  padding: 0 0.15em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+/* **bold** in lesson text. Dark cards set --rt-strong / --rt-hl-text to stay readable. */
+.rich-strong {
+  font-weight: 650;
+  color: var(--rt-strong, var(--color-ink));
+}
+.highlight {
+  color: var(--rt-hl-text, inherit);
+}
+
+/* Tap-to-define jargon words. */
+.glossary-term {
+  display: inline;
+  font: inherit;
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--color-brand-400);
+  text-underline-offset: 4px;
+  cursor: help;
+}
+.glossary-term:hover {
+  text-decoration-color: var(--color-brand-600);
+}
+
+/* Tactile "press-down" buttons, the playful edtech signature. */
+@utility btn-pop {
+  box-shadow: 0 4px 0 0 var(--color-brand-800);
+  transition: transform 80ms ease, box-shadow 80ms ease, background-color 150ms ease;
+  &:active:not(:disabled) {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 0 var(--color-brand-800);
+  }
+  &:disabled {
+    box-shadow: none;
+  }
+}
+
+/* Same idea for answer cards and other tappable tiles. */
+@utility tile-pop {
+  box-shadow: 0 3px 0 0 var(--color-ink-200);
+  transition: transform 80ms ease, box-shadow 80ms ease, background-color 150ms ease, border-color 150ms ease;
+  &:active:not(:disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 0 var(--color-ink-200);
+  }
 }
 
 /* Lesson player: each new screen eases in. */
 @keyframes step-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-.step-in { animation: step-in 0.25s ease-out; }
+.step-in {
+  animation: step-in 0.25s ease-out;
+}
 @media (prefers-reduced-motion: reduce) {
-  .step-in { animation: none; }
+  .step-in {
+    animation: none;
+  }
 }

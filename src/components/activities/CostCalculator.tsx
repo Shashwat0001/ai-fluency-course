@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { IndianRupee } from "lucide-react";
 import ActivityCard from "./ActivityCard";
+import { RichText } from "@/components/lesson/Glossary";
 import type { CostCalculatorActivity } from "@/data/types";
 
 // Rule of thumb for English text: 1 token is roughly 3/4 of a word.
@@ -32,8 +33,8 @@ function Slider({
   return (
     <label className="block">
       <div className="flex items-center justify-between text-sm">
-        <span className="font-medium text-slate-700">{label}</span>
-        <span className="font-bold text-[#0F172A]">{value.toLocaleString("en-IN")}</span>
+        <span className="font-medium text-ink-700">{label}</span>
+        <span className="font-bold text-ink">{value.toLocaleString("en-IN")}</span>
       </div>
       <input
         type="range"
@@ -42,7 +43,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="mt-2 w-full accent-[#4F46E5]"
+        className="mt-2 w-full accent-brand-600"
       />
     </label>
   );
@@ -59,7 +60,7 @@ export default function CostCalculator({ activity }: { activity: CostCalculatorA
 
   return (
     <ActivityCard label="Cost Calculator" title={activity.title} icon={<IndianRupee className="w-5 h-5"/>}>
-      <p className="text-base text-slate-700 leading-relaxed">{activity.intro}</p>
+      <p className="text-base text-ink-700 leading-relaxed"><RichText text={activity.intro}/></p>
 
       <div className="mt-5 space-y-5">
         <Slider label="Customer messages per day" value={messagesPerDay} min={100} max={100000} step={100} onChange={setMessagesPerDay}/>
@@ -74,18 +75,18 @@ export default function CostCalculator({ activity }: { activity: CostCalculatorA
             (outputTokens / 1_000_000) * model.outputUsdPerMillion;
           const inr = usd * activity.usdToInr;
           return (
-            <div key={model.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
-              <span className="text-sm font-semibold text-[#0F172A]">{model.name}</span>
+            <div key={model.name} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 p-4 rounded-xl bg-ink-50 border border-ink-100">
+              <span className="text-sm font-semibold text-ink">{model.name}</span>
               <span className="sm:text-right">
-                <span className="block text-lg font-extrabold text-[#0F172A]">{formatRupees(inr)}<span className="text-xs font-semibold text-slate-500"> /month</span></span>
-                <span className="block text-xs text-slate-500">{formatRupees(inr / monthlyMessages)} per message</span>
+                <span className="block text-lg font-extrabold text-ink">{formatRupees(inr)}<span className="text-xs font-semibold text-ink-500"> /month</span></span>
+                <span className="block text-xs text-ink-500">{formatRupees(inr / monthlyMessages)} per message</span>
               </span>
             </div>
           );
         })}
       </div>
 
-      <p className="mt-4 text-xs text-slate-500 leading-relaxed">
+      <p className="mt-4 text-xs text-ink-500 leading-relaxed">
         {monthlyMessages.toLocaleString("en-IN")} messages a month ≈ {Math.round((inputTokens + outputTokens) / 1_000_000).toLocaleString("en-IN")} million tokens.
         List prices checked {activity.pricesCheckedOn}, at ₹{activity.usdToInr} per US dollar. Real bills vary with discounts, caching and taxes; Indian-language text usually uses more tokens per word than English.
       </p>

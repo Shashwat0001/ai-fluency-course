@@ -2,12 +2,13 @@
 
 import React, { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Clock, PartyPopper, RotateCcw, Rows3, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, PartyPopper, RotateCcw, Rows3, X, Zap } from "lucide-react";
 import type { Lesson } from "@/data/types";
 import { completeLesson } from "@/lib/progress";
 import ActivityBlock from "@/components/activities/ActivityBlock";
+import { CreatorStrip } from "@/components/CreatorCard";
 import QuizQuestionCard from "./QuizQuestionCard";
-import { GlossaryProvider } from "./Glossary";
+import { GlossaryProvider, RichText } from "./Glossary";
 import {
   Analogy,
   AnalogyMap,
@@ -145,15 +146,15 @@ export default function LessonPlayer({
 
   const intro = (
     <header>
-      <span className="text-xs font-bold uppercase tracking-wider text-[#4F46E5]">
-        Track {trackNumber} • Lesson {lessonIndex + 1} of {lessonCount}
+      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-xs font-bold uppercase tracking-wider text-brand-700">
+        Track {trackNumber} · Lesson {lessonIndex + 1} of {lessonCount}
       </span>
-      <h1 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">{lesson.title}</h1>
-      <p className="mt-2 text-lg text-slate-600">{lesson.subtitle}</p>
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
-        <span className="inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5"/> {lesson.durationMinutes} min</span>
-        <span className="px-2.5 py-1 rounded-full bg-indigo-50 text-[#4F46E5]">+{lesson.xpReward} XP</span>
-        <span>Updated {lesson.lastUpdated}</span>
+      <h1 className="mt-4 text-[2.25rem] sm:text-5xl font-extrabold leading-[1.05] text-ink">{lesson.title}</h1>
+      <p className="mt-3 text-lg sm:text-xl text-ink-600 leading-snug">{lesson.subtitle}</p>
+      <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-bold">
+        <span className="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-white border border-ink-200 text-ink-600"><Clock className="w-3.5 h-3.5"/> {lesson.durationMinutes} min</span>
+        <span className="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-marigold-100 text-marigold-900"><Zap className="w-3.5 h-3.5 fill-marigold-500 text-marigold-600"/> +{lesson.xpReward} XP</span>
+        <span className="inline-flex items-center h-7 px-1 text-ink-500 font-semibold">Updated {lesson.lastUpdated}</span>
       </div>
       {lesson.isUpdatedBiWeekly && (
         <div className="mt-6">
@@ -166,22 +167,36 @@ export default function LessonPlayer({
   const allSolved = solved.size === quizTotal;
   const doneScreen = (
     <section className="space-y-6">
-      <div className="p-6 rounded-2xl bg-[#4F46E5] text-white">
-        <PartyPopper className="w-8 h-8"/>
-        <h2 className="mt-3 text-2xl font-extrabold">{allSolved ? "Lesson complete!" : "You reached the end"}</h2>
-        <p className="mt-2 text-base text-indigo-100 leading-relaxed">
-          {allSolved
-            ? `+${lesson.xpReward} XP added to your total. The one thing to remember: ${lesson.bigIdea.headline}`
-            : `Answer all ${quizTotal} questions correctly to earn ${lesson.xpReward} XP.`}
-        </p>
+      <div className="relative overflow-hidden p-6 sm:p-7 rounded-[var(--radius-card)] bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-[var(--shadow-card)] [--rt-strong:#fff] [--rt-hl-text:var(--color-ink)]">
+        <span aria-hidden="true" className="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-marigold-400/30 blur-2xl"/>
+        <div className="relative flex items-center justify-between gap-3">
+          <PartyPopper className="w-9 h-9 text-marigold-300"/>
+          {allSolved && (
+            <span className="inline-flex items-center gap-1 h-8 px-3 rounded-full bg-marigold-400 text-ink text-sm font-extrabold">
+              <Zap className="w-4 h-4 fill-ink"/> +{lesson.xpReward} XP
+            </span>
+          )}
+        </div>
+        <h2 className="relative mt-4 text-3xl font-extrabold">{allSolved ? "Lesson complete!" : "Almost there"}</h2>
+        {allSolved ? (
+          <div className="relative mt-4 p-4 rounded-2xl bg-white/10 border border-white/15">
+            <p className="text-xs font-bold uppercase tracking-wider text-marigold-300">The one thing to remember</p>
+            <p className="mt-1.5 text-[17px] font-semibold leading-snug"><RichText text={lesson.bigIdea.headline} glossary={false}/></p>
+          </div>
+        ) : (
+          <p className="relative mt-2 text-base text-brand-100 leading-relaxed">
+            Get all {quizTotal} questions right to finish the lesson and earn {lesson.xpReward} XP.
+          </p>
+        )}
       </div>
       {lesson.sources && lesson.sources.length > 0 && <Sources sources={lesson.sources}/>}
+      <CreatorStrip/>
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-        <button onClick={() => goTo(1)} className="inline-flex items-center gap-1.5 text-slate-600 cursor-pointer">
-          <RotateCcw className="w-4 h-4"/> Go through it again
+        <button onClick={() => goTo(1)} className="inline-flex items-center gap-1.5 text-ink-600 hover:text-ink cursor-pointer">
+          <RotateCcw className="w-4 h-4"/> Replay this lesson
         </button>
         {prevLesson && (
-          <Link href={lessonHref(prevLesson.id)} className="inline-flex items-center gap-1.5 text-slate-600">
+          <Link href={lessonHref(prevLesson.id)} className="inline-flex items-center gap-1.5 text-ink-600">
             <ArrowLeft className="w-4 h-4"/> Previous: {prevLesson.title}
           </Link>
         )}
@@ -192,16 +207,16 @@ export default function LessonPlayer({
   const finishLink = nextLesson ? (
     <Link
       href={lessonHref(nextLesson.id)}
-      className="flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F46E5] text-white text-base font-semibold hover:bg-[#4338CA]"
+      className="btn-pop flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white text-[17px] font-bold hover:bg-brand-700"
     >
       <span className="truncate">Next: {nextLesson.title}</span> <ArrowRight className="w-5 h-5 shrink-0"/>
     </Link>
   ) : (
     <Link
       href="/#curriculum"
-      className="flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[#4F46E5] text-white text-base font-semibold hover:bg-[#4338CA]"
+      className="btn-pop flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white text-[17px] font-bold hover:bg-brand-700"
     >
-      Track complete: back to Course Map <ArrowRight className="w-5 h-5 shrink-0"/>
+      Track done! Back to the course map <ArrowRight className="w-5 h-5 shrink-0"/>
     </Link>
   );
 
@@ -212,7 +227,7 @@ export default function LessonPlayer({
         <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 pb-16 space-y-6">
           <button
             onClick={() => setOnePage(false)}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#4F46E5] cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 cursor-pointer"
           >
             <ArrowRight className="w-4 h-4"/> Switch to step-by-step
           </button>
@@ -233,29 +248,29 @@ export default function LessonPlayer({
     current.kind === "intro"
       ? "Start lesson"
       : blocked
-        ? "Choose the right answer to continue"
+        ? "Pick the right answer to continue"
         : steps[step + 1]?.kind === "done"
           ? "Finish lesson"
           : "Continue";
 
   return (
     <GlossaryProvider>
-      <div className="sticky top-16 z-30 bg-[#FAFAFA]/95 backdrop-blur-md border-b border-[#E2E8F0]">
+      <div className="sticky top-16 z-30 bg-paper/95 backdrop-blur-md border-b border-ink-200">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 h-12 flex items-center gap-3">
-          <Link href="/#curriculum" aria-label="Close lesson and go to the course map" className="p-1 -ml-1 text-slate-500 hover:text-[#0F172A]">
+          <Link href="/#curriculum" aria-label="Close lesson and go to the course map" className="p-1 -ml-1 text-ink-500 hover:text-ink">
             <X className="w-5 h-5"/>
           </Link>
           <div className="flex-1 flex gap-1" role="progressbar" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={step + 1}>
             {steps.map((s, i) => (
               <span
                 key={i}
-                className={`h-1.5 flex-1 rounded-full transition-colors ${
-                  i <= step ? "bg-[#4F46E5]" : s.kind === "quiz" ? "bg-amber-200" : "bg-slate-200"
+                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                  i < step ? "bg-brand-600" : i === step ? "bg-brand-400" : s.kind === "quiz" ? "bg-marigold-200" : "bg-ink-200"
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs font-semibold text-slate-500 tabular-nums">{step + 1}/{steps.length}</span>
+          <span className="text-xs font-bold text-ink-500 tabular-nums">{step + 1}/{steps.length}</span>
         </div>
       </div>
 
@@ -264,27 +279,32 @@ export default function LessonPlayer({
           {current.kind === "intro" && (
             <>
               {intro}
-              <div className="mt-6 p-4 rounded-xl bg-white border border-[#E2E8F0] text-sm text-slate-600 leading-relaxed">
-                <p className="font-semibold text-[#0F172A]">In this lesson</p>
-                <p className="mt-1">
-                  {steps.length - 2} short screens
-                  {activityCount > 0 ? `, ${activityCount} hands-on ${activityCount === 1 ? "activity" : "activities"}` : ""}
-                  {`, and ${quizTotal} quick ${quizTotal === 1 ? "question" : "questions"}`}. Tap any
-                  <span className="mx-1 underline decoration-dotted decoration-2 decoration-indigo-400 underline-offset-4">underlined word</span>
-                  to see what it means.
-                </p>
+              <div className="mt-7 grid grid-cols-3 gap-2">
+                {[
+                  { n: steps.length - 2, label: "bite-size screens" },
+                  { n: activityCount, label: activityCount === 1 ? "hands-on activity" : "hands-on activities" },
+                  { n: quizTotal, label: quizTotal === 1 ? "quick check" : "quick checks" },
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 rounded-2xl bg-white border border-ink-200 text-center">
+                    <p className="font-display text-2xl font-extrabold text-ink">{stat.n}</p>
+                    <p className="mt-0.5 text-[11px] font-semibold leading-tight text-ink-500">{stat.label}</p>
+                  </div>
+                ))}
               </div>
+              <p className="mt-4 text-sm text-ink-600 leading-relaxed">
+                Stuck on a word? Tap anything <span className="glossary-term">underlined like this</span> for a plain-English meaning.
+              </p>
               {canResume && (
                 <button
                   onClick={() => goTo(savedStep ?? 1)}
-                  className="mt-4 w-full p-4 rounded-xl border-2 border-indigo-200 bg-indigo-50 text-left text-sm font-semibold text-[#4F46E5] cursor-pointer"
+                  className="tile-pop mt-5 w-full p-4 rounded-2xl border-2 border-brand-200 bg-brand-50 text-left text-[15px] font-bold text-brand-700 cursor-pointer"
                 >
-                  Pick up where you left off (screen {savedStep + 1} of {steps.length}) →
+                  Welcome back! Pick up at screen {savedStep + 1} of {steps.length} →
                 </button>
               )}
               <button
                 onClick={() => setOnePage(true)}
-                className="mt-4 inline-flex items-center gap-1.5 text-left text-sm font-semibold text-slate-500 hover:text-[#0F172A] cursor-pointer"
+                className="mt-4 inline-flex items-center gap-1.5 text-left text-sm font-semibold text-ink-500 hover:text-ink cursor-pointer"
               >
                 <Rows3 className="w-4 h-4"/> Prefer to scroll? See the whole lesson on one page
               </button>
@@ -297,7 +317,7 @@ export default function LessonPlayer({
       </main>
 
       <nav
-        className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-[#E2E8F0]"
+        className="fixed bottom-0 inset-x-0 z-40 bg-paper/95 backdrop-blur-md border-t border-ink-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3 flex gap-3">
@@ -305,7 +325,7 @@ export default function LessonPlayer({
             <button
               onClick={() => goTo(step - 1)}
               aria-label="Previous screen"
-              className="min-h-14 w-14 shrink-0 inline-flex items-center justify-center rounded-xl border-2 border-[#E2E8F0] bg-white text-slate-700 hover:bg-slate-50 cursor-pointer"
+              className="tile-pop min-h-14 w-14 shrink-0 inline-flex items-center justify-center rounded-2xl border-2 border-ink-200 bg-white text-ink-700 hover:border-ink-300 cursor-pointer"
             >
               <ArrowLeft className="w-5 h-5"/>
             </button>
@@ -316,10 +336,10 @@ export default function LessonPlayer({
             <button
               onClick={() => goTo(step + 1)}
               disabled={blocked}
-              className={`flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-xl text-base font-semibold transition-colors ${
+              className={`flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-2xl text-[17px] font-bold ${
                 blocked
-                  ? "bg-slate-200 text-slate-500 cursor-not-allowed"
-                  : "bg-[#4F46E5] text-white hover:bg-[#4338CA] cursor-pointer"
+                  ? "bg-ink-100 text-ink-500 border-2 border-dashed border-ink-200 cursor-not-allowed"
+                  : "btn-pop bg-brand-600 text-white hover:bg-brand-700 cursor-pointer"
               }`}
             >
               {continueLabel} {!blocked && <ArrowRight className="w-5 h-5"/>}

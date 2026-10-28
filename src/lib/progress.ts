@@ -39,3 +39,8 @@ export function subscribeToProgress(onChange: () => void) {
     window.removeEventListener("storage", onChange);
   };
 }
+
+/** Completed lesson ids as a stable string (for useSyncExternalStore), e.g. "a,b,c". */
+export function getCompletedKey(): string {
+  return Object.keys(readProgress()).sort().join(",");
+}

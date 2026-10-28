@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, XCircle, HelpCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Target } from "lucide-react";
 import type { QuizQuestion } from "@/data/types";
-import { GlossaryText } from "./Glossary";
+import { RichText } from "./Glossary";
 
 // One quiz question. The player owns which option is selected, so the
 // answer survives moving back and forth between screens.
@@ -20,53 +20,68 @@ export default function QuizQuestionCard({
   selected: number | undefined;
   onSelect: (index: number) => void;
 }) {
+  const chosen = selected !== undefined ? question.options[selected] : undefined;
+
   return (
-    <section className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-      <div className="flex items-center gap-2 text-slate-500">
-        <HelpCircle className="w-5 h-5"/>
-        <span className="text-xs font-bold uppercase tracking-wider">
-          Check Your Intuition • {number} of {total}
-        </span>
+    <section className="p-6 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)]">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-marigold-100 text-marigold-700">
+            <Target className="w-[18px] h-[18px]"/>
+          </span>
+          <span className="text-xs font-bold uppercase tracking-wider text-marigold-700">Quick check</span>
+        </div>
+        <span className="text-xs font-bold text-ink-500 tabular-nums">{number} of {total}</span>
       </div>
-      <p className="mt-3 mb-5 text-lg font-semibold text-[#0F172A] leading-snug">
-        <GlossaryText text={question.scenario}/>
-      </p>
+      <h2 className="mt-4 mb-5 text-[1.35rem] font-bold leading-snug text-ink">
+        <RichText text={question.scenario}/>
+      </h2>
 
       <div className="space-y-3">
         {question.options.map((option, index) => {
           const isSelected = selected === index;
-          let btnStyle = "border-[#E2E8F0] bg-white hover:bg-slate-50";
+          let style = "border-ink-200 bg-white hover:border-brand-300";
           if (isSelected) {
-            btnStyle = option.isCorrect ? "border-[#10B981] bg-emerald-50" : "border-rose-400 bg-rose-50";
+            style = option.isCorrect ? "border-mint-500 bg-mint-50" : "border-coral-400 bg-coral-50";
           }
 
           return (
             <button
               key={option.id}
               onClick={() => onSelect(index)}
-              className={`w-full min-h-14 text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between gap-4 cursor-pointer ${btnStyle}`}
+              className={`tile-pop w-full min-h-14 text-left px-4 py-3.5 rounded-2xl border-2 flex items-center justify-between gap-4 cursor-pointer ${style}`}
             >
-              <span className="text-base font-medium text-[#0F172A]">{option.text}</span>
+              <span className="flex items-start gap-3">
+                <span
+                  className={`mt-0.5 inline-flex items-center justify-center w-6 h-6 shrink-0 rounded-md border-2 text-xs font-bold uppercase ${
+                    isSelected ? (option.isCorrect ? "border-mint-500 text-mint-700" : "border-coral-400 text-coral-600") : "border-ink-200 text-ink-500"
+                  }`}
+                >
+                  {option.id}
+                </span>
+                <span className="text-[16px] font-medium leading-snug text-ink">{option.text}</span>
+              </span>
               {isSelected &&
                 (option.isCorrect ? (
-                  <CheckCircle2 className="w-5 h-5 text-[#10B981] shrink-0"/>
+                  <CheckCircle2 className="w-6 h-6 text-mint-500 shrink-0"/>
                 ) : (
-                  <XCircle className="w-5 h-5 text-rose-500 shrink-0"/>
+                  <XCircle className="w-6 h-6 text-coral-500 shrink-0"/>
                 ))}
             </button>
           );
         })}
       </div>
 
-      {selected !== undefined && (
+      {chosen && (
         <div
-          className={`mt-4 p-4 rounded-xl text-base font-medium leading-relaxed ${
-            question.options[selected].isCorrect ? "bg-emerald-100 text-emerald-900" : "bg-rose-100 text-rose-900"
-          }`}
+          role="status"
+          className={`mt-4 p-4 rounded-2xl text-[16px] leading-relaxed ${
+            chosen.isCorrect ? "bg-mint-100 text-mint-900" : "bg-coral-100 text-coral-900"
+          } [--rt-strong:currentColor]`}
         >
-          {question.options[selected].analogyFeedback}
-          {!question.options[selected].isCorrect && (
-            <span className="block mt-1 text-sm font-semibold">Try another answer to continue.</span>
+          <RichText text={chosen.analogyFeedback} glossary={false}/>
+          {!chosen.isCorrect && (
+            <span className="block mt-1.5 text-sm font-bold">Have another go: pick a different answer to continue.</span>
           )}
         </div>
       )}

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { ListChecks } from "lucide-react";
 import ActivityCard from "./ActivityCard";
+import { RichText } from "@/components/lesson/Glossary";
 import type { ChecklistActivity } from "@/data/types";
 
 export default function Checklist({ activity }: { activity: ChecklistActivity }) {
@@ -18,22 +19,22 @@ export default function Checklist({ activity }: { activity: ChecklistActivity })
 
   return (
     <ActivityCard label="Your Playbook" title={activity.title} icon={<ListChecks className="w-5 h-5"/>}>
-      <p className="text-base text-slate-700 leading-relaxed">{activity.intro}</p>
+      <p className="text-base text-ink-700 leading-relaxed"><RichText text={activity.intro}/></p>
       <ul className="mt-4 space-y-2">
         {activity.items.map((item, index) => (
           <li key={item.text}>
-            <label className="flex gap-3 p-3 rounded-xl border border-[#E2E8F0] hover:bg-slate-50 cursor-pointer">
+            <label className="flex gap-3 p-3 rounded-xl border border-ink-200 hover:bg-ink-50 cursor-pointer">
               <input
                 type="checkbox"
                 checked={ticked.has(index)}
                 onChange={() => toggle(index)}
-                className="mt-1 w-4 h-4 accent-[#4F46E5] shrink-0"
+                className="mt-1 w-4 h-4 accent-brand-600 shrink-0"
               />
               <span>
-                <span className={`block text-sm font-semibold ${ticked.has(index) ? "text-slate-400 line-through" : "text-[#0F172A]"}`}>
+                <span className={`block text-sm font-semibold ${ticked.has(index) ? "text-ink-400 line-through" : "text-ink"}`}>
                   {item.text}
                 </span>
-                {item.detail && <span className="block mt-0.5 text-sm text-slate-600 leading-relaxed">{item.detail}</span>}
+                {item.detail && <span className="block mt-0.5 text-sm text-ink-600 leading-relaxed"><RichText text={item.detail} glossary={false}/></span>}
               </span>
             </label>
           </li>

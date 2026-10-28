@@ -2,30 +2,51 @@
 
 import React from "react";
 import {
+  ArrowRight,
   ArrowUpRight,
   BookMarked,
   Briefcase,
   CalendarClock,
   GraduationCap,
+  Languages,
   Library,
   Lightbulb,
   MessagesSquare,
+  Sparkles,
 } from "lucide-react";
 import type { Lesson } from "@/data/types";
-import { GlossaryText } from "./Glossary";
+import { RichText } from "./Glossary";
 
 // The classic lesson sections. Each one is a self-contained card, so the
 // player can show them one per screen or all stacked on one page.
 
+const card = "p-6 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)]";
+
+function Label({ icon, children, tone = "brand" }: { icon: React.ReactNode; children: React.ReactNode; tone?: "brand" | "ink" | "light" }) {
+  const tones = {
+    brand: "bg-brand-50 text-brand-600",
+    ink: "bg-ink-100 text-ink-600",
+    light: "bg-white/10 text-marigold-300",
+  };
+  return (
+    <div className="flex items-center gap-2">
+      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-lg [&>svg]:w-[18px] [&>svg]:h-[18px] ${tones[tone]}`}>{icon}</span>
+      <span className={`text-xs font-bold uppercase tracking-wider ${tone === "light" ? "text-marigold-300" : tone === "ink" ? "text-ink-500" : "text-brand-600"}`}>
+        {children}
+      </span>
+    </div>
+  );
+}
+
 export function FastMovingNotice({ lastUpdated }: { lastUpdated: string }) {
   return (
-    <aside className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-900">
-      <div className="flex items-center gap-2 font-semibold">
+    <aside className="p-4 rounded-2xl bg-marigold-50 border border-marigold-200 text-sm text-ink-800">
+      <div className="flex items-center gap-2 font-bold text-marigold-800">
         <CalendarClock className="w-4 h-4 shrink-0"/>
-        <span>Fast-moving topic: accurate as of {lastUpdated}</span>
+        <span>Fast-moving topic · accurate as of {lastUpdated}</span>
       </div>
       <p className="mt-1 leading-relaxed">
-        AI products, rankings and prices change every few weeks. Treat specific comparisons here as a snapshot, not a permanent fact. Sources are listed at the end.
+        AI products, prices and rankings change every few weeks. Treat the specifics as a snapshot; sources are at the end.
       </p>
     </aside>
   );
@@ -33,11 +54,14 @@ export function FastMovingNotice({ lastUpdated }: { lastUpdated: string }) {
 
 export function BigIdea({ bigIdea }: { bigIdea: Lesson["bigIdea"] }) {
   return (
-    <section className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-      <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The Big Idea</p>
-      <h2 className="mt-2 text-xl font-bold leading-snug">{bigIdea.headline}</h2>
-      <p className="mt-3 text-base text-slate-600 leading-relaxed">
-        <GlossaryText text={bigIdea.explanation}/>
+    <section className="relative overflow-hidden p-6 sm:p-7 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)]">
+      <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-brand-500 to-marigold-400"/>
+      <Label icon={<Sparkles/>}>The big idea</Label>
+      <h2 className="mt-4 text-[1.65rem] sm:text-3xl font-extrabold leading-[1.15] text-ink">
+        <RichText text={bigIdea.headline} glossary={false}/>
+      </h2>
+      <p className="mt-4 text-[17px] text-ink-600 leading-relaxed">
+        <RichText text={bigIdea.explanation}/>
       </p>
     </section>
   );
@@ -45,14 +69,11 @@ export function BigIdea({ bigIdea }: { bigIdea: Lesson["bigIdea"] }) {
 
 export function Analogy({ analogy }: { analogy: NonNullable<Lesson["analogy"]> }) {
   return (
-    <section className="p-6 rounded-2xl bg-indigo-50/50 border border-indigo-100">
-      <div className="flex items-center gap-2 text-[#4F46E5]">
-        <Lightbulb className="w-5 h-5"/>
-        <span className="text-xs font-bold uppercase tracking-wider">The Everyday Analogy</span>
-      </div>
-      <h2 className="mt-2 text-xl font-bold">{analogy.title}</h2>
-      <p className="mt-3 text-base leading-relaxed font-medium">
-        <GlossaryText text={analogy.metaphor}/>
+    <section className="p-6 sm:p-7 rounded-[var(--radius-card)] bg-brand-50 border border-brand-100">
+      <Label icon={<Lightbulb/>}>Picture it like this</Label>
+      <h2 className="mt-4 text-2xl sm:text-[1.75rem] font-extrabold leading-tight text-ink">{analogy.title}</h2>
+      <p className="mt-4 text-[17px] leading-relaxed text-ink-800">
+        <RichText text={analogy.metaphor}/>
       </p>
     </section>
   );
@@ -60,18 +81,15 @@ export function Analogy({ analogy }: { analogy: NonNullable<Lesson["analogy"]> }
 
 export function AnalogyMap({ analogy }: { analogy: NonNullable<Lesson["analogy"]> }) {
   return (
-    <section className="p-6 rounded-2xl bg-indigo-50/50 border border-indigo-100">
-      <div className="flex items-center gap-2 text-[#4F46E5]">
-        <Lightbulb className="w-5 h-5"/>
-        <span className="text-xs font-bold uppercase tracking-wider">How the Analogy Maps</span>
-      </div>
-      <div className="mt-4 grid gap-3">
+    <section className={card}>
+      <Label icon={<Lightbulb/>}>How the analogy maps</Label>
+      <div className="mt-5 grid gap-3">
         {analogy.visualComparison.map((row) => (
-          <div key={row.everydayItem} className="p-4 rounded-xl bg-white border border-indigo-100 text-sm">
-            <p className="font-semibold">{row.everydayItem}</p>
-            <p className="mt-1 text-slate-600">
-              <span className="text-[#4F46E5] font-bold">→ </span>
-              <GlossaryText text={row.aiEquivalent}/>
+          <div key={row.everydayItem} className="rounded-2xl border border-ink-200 overflow-hidden">
+            <p className="px-4 py-3 bg-ink-50 text-[15px] font-semibold text-ink">{row.everydayItem}</p>
+            <p className="px-4 py-3 flex gap-2 text-[15px] text-ink-700 leading-relaxed">
+              <ArrowRight className="w-4 h-4 mt-1 shrink-0 text-brand-500"/>
+              <span><RichText text={row.aiEquivalent}/></span>
             </p>
           </div>
         ))}
@@ -81,26 +99,34 @@ export function AnalogyMap({ analogy }: { analogy: NonNullable<Lesson["analogy"]
 }
 
 export function TechConversation({ conversation }: { conversation: NonNullable<Lesson["techConversation"]> }) {
+  const speakers = [conversation.speakerA, conversation.speakerB];
   return (
-    <section className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-      <div className="flex items-center gap-2 text-slate-500">
-        <MessagesSquare className="w-5 h-5"/>
-        <span className="text-xs font-bold uppercase tracking-wider">Overheard in a Tech Meeting</span>
-      </div>
-      <p className="mt-2 text-sm text-slate-500">{conversation.context}</p>
+    <section className={card}>
+      <Label icon={<MessagesSquare/>}>Overheard in a tech meeting</Label>
+      <p className="mt-3 text-sm text-ink-500">{conversation.context}</p>
 
-      <div className="mt-4 space-y-3">
-        {[conversation.speakerA, conversation.speakerB].map((speaker) => (
-          <div key={speaker.role} className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{speaker.role}</p>
-            <p className="mt-1 text-base">&ldquo;<GlossaryText text={speaker.quote}/>&rdquo;</p>
+      <div className="mt-5 space-y-3">
+        {speakers.map((speaker, i) => (
+          <div key={speaker.role} className={`flex flex-col ${i === 1 ? "items-end" : "items-start"}`}>
+            <span className="px-1 text-[11px] font-bold uppercase tracking-wider text-ink-500">{speaker.role}</span>
+            <p
+              className={`mt-1 max-w-[92%] px-4 py-3 text-[16px] leading-relaxed ${
+                i === 1 ? "rounded-2xl rounded-tr-md bg-brand-600 text-white [--rt-strong:#fff] [--rt-hl-text:var(--color-ink)]" : "rounded-2xl rounded-tl-md bg-ink-100 text-ink"
+              }`}
+            >
+              <RichText text={speaker.quote}/>
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 p-4 rounded-xl bg-emerald-50 text-emerald-900">
-        <p className="text-xs font-bold uppercase tracking-wider">In Plain English</p>
-        <p className="mt-1 text-base leading-relaxed">{conversation.plainEnglishTranslation}</p>
+      <div className="mt-5 p-4 rounded-2xl bg-mint-50 border border-mint-100">
+        <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-mint-700">
+          <Languages className="w-4 h-4"/> In plain English
+        </div>
+        <p className="mt-1.5 text-[16px] leading-relaxed text-ink-800">
+          <RichText text={conversation.plainEnglishTranslation}/>
+        </p>
       </div>
     </section>
   );
@@ -109,56 +135,49 @@ export function TechConversation({ conversation }: { conversation: NonNullable<L
 export function RealWorld({ realWorld }: { realWorld: NonNullable<Lesson["realWorldApplication"]> }) {
   return (
     <section className="grid gap-4">
-      <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-        <div className="flex items-center gap-2 text-slate-500">
-          <Briefcase className="w-5 h-5"/>
-          <span className="text-xs font-bold uppercase tracking-wider">Use It at Work</span>
-        </div>
-        <p className="mt-3 text-base text-slate-700 leading-relaxed"><GlossaryText text={realWorld.forWork}/></p>
+      <div className={card}>
+        <Label icon={<Briefcase/>}>Use it at work</Label>
+        <p className="mt-4 text-[16px] text-ink-700 leading-relaxed"><RichText text={realWorld.forWork}/></p>
       </div>
-      <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-        <div className="flex items-center gap-2 text-slate-500">
-          <GraduationCap className="w-5 h-5"/>
-          <span className="text-xs font-bold uppercase tracking-wider">Use It to Learn</span>
-        </div>
-        <p className="mt-3 text-base text-slate-700 leading-relaxed"><GlossaryText text={realWorld.forLearning}/></p>
+      <div className={card}>
+        <Label icon={<GraduationCap/>}>Use it to learn</Label>
+        <p className="mt-4 text-[16px] text-ink-700 leading-relaxed"><RichText text={realWorld.forLearning}/></p>
       </div>
     </section>
   );
 }
 
-export function JargonCard({ card }: { card: NonNullable<Lesson["jargonCard"]> }) {
+export function JargonCard({ card: jargon }: { card: NonNullable<Lesson["jargonCard"]> }) {
   return (
-    <section className="p-6 rounded-2xl bg-[#0F172A] text-white">
-      <div className="flex items-center gap-2 text-indigo-300">
-        <BookMarked className="w-5 h-5"/>
-        <span className="text-xs font-bold uppercase tracking-wider">Jargon Card</span>
+    <section className="relative overflow-hidden p-6 sm:p-7 rounded-[var(--radius-card)] bg-ink-900 text-white shadow-[var(--shadow-card)] [--rt-strong:#fff] [--rt-hl-text:var(--color-ink)]">
+      <span aria-hidden="true" className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-brand-600/40 blur-2xl"/>
+      <Label icon={<BookMarked/>} tone="light">Jargon card</Label>
+      <h2 className="relative mt-4 text-[1.75rem] font-extrabold leading-tight">{jargon.term}</h2>
+      <p className="relative mt-3 text-[17px] text-ink-200 leading-relaxed">
+        <RichText text={jargon.oneLineAnalogy} glossary={false}/>
+      </p>
+      <div className="relative mt-6 pt-5 border-t border-white/10">
+        <p className="text-xs font-bold uppercase tracking-wider text-marigold-300">Say this in your next meeting</p>
+        <p className="mt-2 font-serif italic text-[22px] leading-snug text-white">{jargon.meetingDropLine}</p>
       </div>
-      <h2 className="mt-2 text-xl font-bold">{card.term}</h2>
-      <p className="mt-2 text-base text-slate-300 leading-relaxed">{card.oneLineAnalogy}</p>
-      <p className="mt-4 text-xs font-bold uppercase tracking-wider text-indigo-300">Say This in Your Next Meeting</p>
-      <p className="mt-1 text-base italic">{card.meetingDropLine}</p>
     </section>
   );
 }
 
 export function Sources({ sources }: { sources: NonNullable<Lesson["sources"]> }) {
   return (
-    <section className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-      <div className="flex items-center gap-2 text-slate-500">
-        <Library className="w-5 h-5"/>
-        <span className="text-xs font-bold uppercase tracking-wider">Sources & Further Reading</span>
-      </div>
-      <ul className="mt-3 space-y-2">
+    <section className={card}>
+      <Label icon={<Library/>} tone="ink">Sources & further reading</Label>
+      <ul className="mt-4 space-y-2.5">
         {sources.map((source) => (
           <li key={source.url}>
             <a
               href={source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-start gap-1 text-sm text-[#4F46E5] hover:underline"
+              className="inline-flex items-start gap-1 text-[15px] text-brand-700 hover:underline"
             >
-              {source.label} <ArrowUpRight className="w-3.5 h-3.5 mt-0.5 shrink-0"/>
+              {source.label} <ArrowUpRight className="w-3.5 h-3.5 mt-1 shrink-0"/>
             </a>
           </li>
         ))}
