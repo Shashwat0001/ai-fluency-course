@@ -106,6 +106,15 @@ Every lesson has a **Key terms** deck: tap-to-flip cards, opened from the lesson
 
 **If a deck looks thin, add `keyTerms`.** If two dictionary entries mean the same thing, give one a `sameAs` so the deck shows a single card.
 
+## The capstone (Track 7)
+
+`src/data/tracks/track-7-capstone.ts` takes learners through planning, building and publishing a real one-page site in three lessons: **Plan** (the brief), **Build** (one HTML file, improved in small rounds), **Ship** (Netlify Drop).
+
+**The publishing steps depend on a third-party service.** Re-check them against Netlify's docs, which are linked in the lesson's sources, whenever you run the Pulse sweep. Checked on 28 Oct 2026:
+- You drag a **folder** containing `index.html` onto app.netlify.com/drop.
+- No account is needed to try it, but the site is **password-protected until it is claimed** with a free account.
+- To update a published site, drag the new folder onto that site's **Deploys** page.
+
 ## Publishing the AI Pulse (every two weeks)
 
 About 90 minutes per edition. Claude can draft it; a person must check every link and approve it.

@@ -81,6 +81,17 @@ export const TRACK_1: Track = {
             },
           ],
         },
+        {
+          type: "tryIt",
+          title: "Catch the chai-wala improvising",
+          intro: "See **probabilistic** behaviour for yourself. Ask the same thing twice and compare.",
+          prompt: "Suggest one catchy name for a new chai stall outside a Bengaluru tech park, with a one-line reason. Reply in under 25 words.",
+          whatToNotice: [
+            "Ask again, or tap **Regenerate**. You'll likely get a **different name each time**. That's the chai-wala improvising, not a bug.",
+            "Now ask: \"What is 15% of ₹2,340?\" and check it on your phone's calculator. For anything involving money, ==the calculator is the source of truth==.",
+            "Varied answers help on **creative** questions. On **exact** questions, check.",
+          ],
+        },
       ],
       techConversation: {
         context: "A Bengaluru fintech plans a new refund feature",

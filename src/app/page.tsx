@@ -23,6 +23,7 @@ import {
   Lightbulb,
   Newspaper,
   PanelsTopLeft,
+  Rocket,
   Sparkles,
   Trophy,
   XCircle,
@@ -36,6 +37,7 @@ const TRACK_ICONS: Record<string, React.ComponentType<{ className?: string }>> =
   Bot,
   Zap,
   Globe2,
+  Rocket,
 };
 
 const FEATURES = [
@@ -78,7 +80,7 @@ export default function HomePage() {
   const demoQuestion = demoLesson.quiz[0];
   const demoChoice = demoAnswer !== null ? demoQuestion.options[demoAnswer] : null;
 
-  const pulseTrack = CURRICULUM_TRACKS[CURRICULUM_TRACKS.length - 1];
+  const pulseTrack = CURRICULUM_TRACKS.find((t) => t.id === "track-6-biweekly-pulse") ?? CURRICULUM_TRACKS[0];
   const pulseLesson = pulseTrack.lessons[pulseTrack.lessons.length - 1];
 
   return (
@@ -245,9 +247,9 @@ export default function HomePage() {
           <div className="max-w-6xl mx-auto">
             <div className="max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-wider text-brand-600">The course</p>
-              <h2 className="mt-2 text-3xl sm:text-5xl font-extrabold leading-[1.05] text-ink">Six tracks. Zero to fluent.</h2>
+              <h2 className="mt-2 text-3xl sm:text-5xl font-extrabold leading-[1.05] text-ink">Six tracks and a capstone. Zero to fluent.</h2>
               <p className="mt-4 text-lg text-ink-600 leading-relaxed">
-                Go in order, or jump straight to whatever your next meeting needs. Every track ends with a badge.
+                Go in order, or jump straight to whatever your next meeting needs. Every track ends with a badge, and the capstone ends with a website you built yourself.
               </p>
             </div>
 

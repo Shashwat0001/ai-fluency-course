@@ -59,6 +59,17 @@ export const TRACK_2: Track = {
             { front: "System prompt", back: "**Standing instructions** an app gives the AI before every conversation, e.g. 'Always reply in a friendly tone.'" },
           ],
         },
+        {
+          type: "tryIt",
+          title: "Plant a rule and watch it stick",
+          intro: "Everything in a chat sits on the AI's **blackboard**. Plant a rule at the start and see how long it lasts.",
+          prompt: "For this whole chat, end every reply with the word \"Shabash\". First question: in two sentences, what is a context window?",
+          whatToNotice: [
+            "Ask two or three follow-ups. The rule holds, because it's still **on the blackboard**.",
+            "In a **very long chat** (dozens of messages, or big pasted documents), early rules can get squeezed out. ==That's when you start fresh and restate them.==",
+            "Bonus: ask \"Roughly how many tokens was my first message?\" Treat the answer as an **estimate**: models can't count their own tokens exactly.",
+          ],
+        },
       ],
       techConversation: {
         context: "A Pune edtech startup works out why its study assistant 'forgot' its rules",
@@ -296,6 +307,17 @@ export const TRACK_2: Track = {
           debrief:
             "Rule of thumb: start with **prompting**. Add **RAG** when the AI needs your documents or changing facts. Consider **fine-tuning** only for a consistent style or format at scale.",
         },
+        {
+          type: "tryIt",
+          title: "Run a mini open-book exam",
+          intro: "You can feel how **RAG** works with zero setup: hand the AI a document and make it answer only from that.",
+          prompt: "Answer ONLY using the policy below. If the answer isn't in it, reply exactly: \"Not in the document.\"\n\nPOLICY: Employees get 18 days of paid leave a year. Up to 6 unused days carry over to the next year. Leave requests need manager approval 7 days in advance, except sick leave.\n\nQuestions:\n1. How many paid leave days do I get?\n2. Can I carry over 10 unused days?\n3. How much is the Diwali bonus?",
+          whatToNotice: [
+            "Questions 1 and 2 come **straight from the text**. That's grounding: answers you can trace back to a source.",
+            "Question 3 should get \"Not in the document.\" If the AI invents a bonus instead, you've just watched a **hallucination** happen.",
+            "Real RAG does this automatically: ==it finds the right pages among thousands, then answers from them==.",
+          ],
+        },
       ],
       techConversation: {
         context: "A Gurugram startup builds an internal HR policy bot",
@@ -469,6 +491,17 @@ export const TRACK_2: Track = {
             "**Concrete details** (₹ per 500g, cut-off date, WhatsApp) make the result usable straight away.",
             "'Must look great on a phone' matches **how her customers will actually open it**.",
             "'No payments or login' keeps it **simple and safe**. Those features need an engineer's review.",
+          ],
+        },
+        {
+          type: "tryIt",
+          title: "Vibe-code a tiny tool in one prompt",
+          intro: "Your first vibe-coded app, in about two minutes. **Best done on a laptop.**",
+          prompt: "Create a single-file HTML web app: a bill splitter for friends at a restaurant.\n- Inputs: total bill in ₹, tip % (default 10), number of people.\n- Show each person's share in big text, rounded to the nearest rupee.\n- Mobile-friendly, warm saffron and cream colours, a friendly font.\nGive me the complete code in one block.",
+          whatToNotice: [
+            "If your assistant shows a **Preview**, **Canvas** or **Artifact** view, open it. If not, copy the code into a file called **index.html** and double-click it to open it in your browser.",
+            "Now direct it like a film director: \"Add a toggle that rounds each share up to the nearest ₹10.\" That back-and-forth ==is vibe coding==.",
+            "Test it once with numbers you can check in your head: ₹1,000, 0% tip and 4 people should give **₹250 each**.",
           ],
         },
       ],
