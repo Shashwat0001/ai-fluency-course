@@ -154,6 +154,9 @@ export interface Lesson {
     forWork: string;
     forLearning: string;
   };
+  // Extra cards for the lesson's flashcard deck, for key ideas that aren't in the
+  // jargon dictionary (src/data/glossary.ts). Markup allowed in `meaning`.
+  keyTerms?: { term: string; meaning: string }[];
   jargonCard?: {
     term: string;
     oneLineAnalogy: string;

@@ -2,11 +2,12 @@
 
 import React, { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Clock, PartyPopper, RotateCcw, Rows3, X, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Layers3, PartyPopper, RotateCcw, Rows3, X, Zap } from "lucide-react";
 import type { Lesson } from "@/data/types";
 import { completeLesson } from "@/lib/progress";
 import ActivityBlock from "@/components/activities/ActivityBlock";
 import { CreatorStrip } from "@/components/CreatorCard";
+import { buildLessonDeck, DeckButton, LessonDeck } from "./LessonDeck";
 import QuizQuestionCard from "./QuizQuestionCard";
 import { GlossaryProvider, RichText } from "./Glossary";
 import {
@@ -89,6 +90,8 @@ export default function LessonPlayer({
   const [steps] = useState(() => buildSteps(lesson));
   const [step, setStep] = useState(0);
   const [onePage, setOnePage] = useState(false);
+  const [deck] = useState(() => buildLessonDeck(lesson));
+  const [deckOpen, setDeckOpen] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [solved, setSolved] = useState<Set<string>>(new Set());
   const savedStep = useSyncExternalStore(noSubscribe, () => readSavedStep(lesson.id), () => null);
@@ -123,7 +126,7 @@ export default function LessonPlayer({
 
   // Arrow keys move between screens on a laptop, unless the learner is typing or using a slider.
   useEffect(() => {
-    if (onePage) return;
+    if (onePage || deckOpen) return;
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === "INPUT" || tag === "TEXTAREA") return;
@@ -191,6 +194,19 @@ export default function LessonPlayer({
       </div>
       {lesson.sources && lesson.sources.length > 0 && <Sources sources={lesson.sources}/>}
       <CreatorStrip/>
+      {deck.length > 0 && (
+        <button
+          onClick={() => setDeckOpen(true)}
+          className="tile-pop w-full flex items-center gap-3 p-4 rounded-2xl border-2 border-brand-200 bg-brand-50 text-left cursor-pointer"
+        >
+          <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-600 text-white shrink-0"><Layers3 className="w-5 h-5"/></span>
+          <span className="flex-1">
+            <span className="block text-[15px] font-bold text-ink">Lock it in: review the {deck.length} key terms</span>
+            <span className="block text-sm text-ink-600">Tap-to-flip flashcards. Come back to them any time from the header.</span>
+          </span>
+          <ArrowRight className="w-5 h-5 text-brand-600"/>
+        </button>
+      )}
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
         <button onClick={() => goTo(1)} className="inline-flex items-center gap-1.5 text-ink-600 hover:text-ink cursor-pointer">
           <RotateCcw className="w-4 h-4"/> Replay this lesson
@@ -225,12 +241,15 @@ export default function LessonPlayer({
     return (
       <GlossaryProvider>
         <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 pb-16 space-y-6">
-          <button
-            onClick={() => setOnePage(false)}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 cursor-pointer"
-          >
-            <ArrowRight className="w-4 h-4"/> Switch to step-by-step
-          </button>
+          <div className="flex items-center justify-between gap-3">
+            <button
+              onClick={() => setOnePage(false)}
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 cursor-pointer"
+            >
+              <ArrowRight className="w-4 h-4"/> Switch to step-by-step
+            </button>
+            {deck.length > 0 && <DeckButton count={deck.length} onClick={() => setDeckOpen(true)}/>}
+          </div>
           {intro}
           {steps.map((s, i) =>
             s.kind === "content" ? <div key={s.key}>{s.node}</div> : s.kind === "quiz" ? <div key={`quiz-${i}`}>{renderQuiz(s.index)}</div> : null
@@ -238,6 +257,7 @@ export default function LessonPlayer({
           {doneScreen}
           <div className="flex">{finishLink}</div>
         </main>
+        {deckOpen && <LessonDeck cards={deck} lessonTitle={lesson.title} onClose={() => setDeckOpen(false)}/>}
       </GlossaryProvider>
     );
   }
@@ -271,6 +291,7 @@ export default function LessonPlayer({
             ))}
           </div>
           <span className="text-xs font-bold text-ink-500 tabular-nums">{step + 1}/{steps.length}</span>
+          {deck.length > 0 && <DeckButton count={deck.length} onClick={() => setDeckOpen(true)}/>}
         </div>
       </div>
 
@@ -294,6 +315,14 @@ export default function LessonPlayer({
               <p className="mt-4 text-sm text-ink-600 leading-relaxed">
                 Stuck on a word? Tap anything <span className="glossary-term">underlined like this</span> for a plain-English meaning.
               </p>
+              {deck.length > 0 && (
+                <button
+                  onClick={() => setDeckOpen(true)}
+                  className="mt-3 inline-flex items-center gap-1.5 text-left text-sm font-semibold text-brand-700 hover:text-brand-800 cursor-pointer"
+                >
+                  <Layers3 className="w-4 h-4"/> Want a head start? Flip through the {deck.length} key terms
+                </button>
+              )}
               {canResume && (
                 <button
                   onClick={() => goTo(savedStep ?? 1)}
@@ -347,6 +376,7 @@ export default function LessonPlayer({
           )}
         </div>
       </nav>
+      {deckOpen && <LessonDeck cards={deck} lessonTitle={lesson.title} onClose={() => setDeckOpen(false)}/>}
     </GlossaryProvider>
   );
 }

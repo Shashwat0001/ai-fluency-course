@@ -9,11 +9,14 @@ export interface GlossaryEntry {
   definition: string;
   // Acronyms like "RAG" shouldn't match ordinary words like "rag".
   caseSensitive?: boolean;
+  // Another entry this is just a different name for, so flashcard decks show only one card.
+  sameAs?: string;
 }
 
 export const GLOSSARY: GlossaryEntry[] = [
   { term: "LLM", aliases: ["LLMs"], caseSensitive: true, definition: "Large Language Model: the AI engine inside chatbots like ChatGPT, Gemini and Claude. It writes by predicting the next chunk of text." },
-  { term: "Large Language Model", aliases: ["Large Language Models"], definition: "The AI engine inside chatbots like ChatGPT, Gemini and Claude, trained on huge amounts of text to predict what comes next." },
+  { term: "Large Language Model", aliases: ["Large Language Models"], sameAs: "LLM", definition: "The AI engine inside chatbots like ChatGPT, Gemini and Claude, trained on huge amounts of text to predict what comes next." },
+  { term: "training data", definition: "The huge collection of examples (text, code, images) an AI learned its patterns from. It stops at a cutoff date." },
   { term: "token", aliases: ["tokens"], definition: "A small chunk of text, a word or part of one, that AI reads and writes. In English, 100 tokens is about 60–80 words." },
   { term: "context window", aliases: ["context windows"], definition: "How much text the AI can work with at once: your messages, uploaded files and its own replies, all together." },
   { term: "system prompt", definition: "Standing instructions an app gives the AI before every conversation, like a job description it reads each time." },
@@ -30,7 +33,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   { term: "eval", aliases: ["evals", "eval set"], definition: "A fixed test set of real examples with known good answers, used to score an AI before and after every change. A mock test for AI." },
   { term: "regression", definition: "When something that used to work gets worse after a change." },
   { term: "LLM-as-a-judge", definition: "Using one AI to grade another AI's answers against a written marking scheme, with people checking a sample." },
-  { term: "golden set", definition: "The team's agreed set of test questions with approved answers. Another name for an eval set." },
+  { term: "golden set", sameAs: "eval", definition: "The team's agreed set of test questions with approved answers. Another name for an eval set." },
   { term: "benchmark", aliases: ["benchmarks"], definition: "A standard test used to compare AI models, like a common entrance exam. Companies tend to quote the ones they top." },
   { term: "frontier model", aliases: ["frontier models"], definition: "The most capable AI models from the leading labs at any given moment." },
   { term: "open weights", aliases: ["open-weight", "open-weights"], definition: "A model whose trained files are published, so companies can download it and run it on their own servers." },

@@ -178,3 +178,33 @@
     animation: none;
   }
 }
+
+/* Flashcard deck: a card that flips in 3D. Faces are stacked; the back starts turned away. */
+.deck-stage {
+  perspective: 1400px;
+}
+.deck-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.deck-card.is-flipped {
+  transform: rotateY(180deg);
+}
+.deck-face {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.deck-back {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-card {
+    transition: none;
+  }
+}
