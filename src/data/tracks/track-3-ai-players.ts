@@ -97,6 +97,17 @@ export const TRACK_3: Track = {
             { text: "DeepSeek's models", bucket: 1, why: "DeepSeek publishes its model weights **openly on Hugging Face**." },
           ],
         },
+        {
+          type: "tryIt",
+          title: "Same question, two assistants",
+          intro: "The fastest way to feel the difference between AI labs is a **side-by-side test**.",
+          prompt: "In under 80 words, explain UPI to a tourist visiting India for the first time. Then tell me the one thing in your answer you're least sure about.",
+          whatToNotice: [
+            "Paste it into **two different assistants**, say ChatGPT and Gemini, or Claude and Meta AI in WhatsApp. Compare tone, length and clarity.",
+            "Check one fact from each answer yourself. ==The one that admits uncertainty honestly often deserves more trust.==",
+            "You've just run a mini **eval**: same question, same yardstick, different models. Teams do exactly this with hundreds of questions.",
+          ],
+        },
       ],
       techConversation: {
         context: "A Hyderabad SaaS team picks models for two features",

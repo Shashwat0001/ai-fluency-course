@@ -8,8 +8,9 @@ import { TRACK_3 } from "./tracks/track-3-ai-players";
 import { TRACK_4 } from "./tracks/track-4-modern-world";
 import { TRACK_5 } from "./tracks/track-5-tech-fluency";
 import { TRACK_6 } from "./tracks/track-6-biweekly-pulse";
+import { TRACK_7 } from "./tracks/track-7-capstone";
 
 export * from "./types";
 export { BI_WEEKLY_META, BI_WEEKLY_PULSE_FEED } from "./pulse";
 
-export const CURRICULUM_TRACKS: Track[] = [TRACK_1, TRACK_2, TRACK_3, TRACK_4, TRACK_5, TRACK_6];
+export const CURRICULUM_TRACKS: Track[] = [TRACK_1, TRACK_2, TRACK_3, TRACK_4, TRACK_5, TRACK_6, TRACK_7];
