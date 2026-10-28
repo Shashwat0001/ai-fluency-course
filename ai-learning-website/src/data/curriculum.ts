@@ -17,6 +17,8 @@ export interface Lesson {
   xpReward: number;
   isUpdatedBiWeekly?: boolean;
   lastUpdated: string;
+  // Where the time-sensitive claims in this lesson come from (rankings, model capabilities, prices).
+  sources?: { label: string; url: string }[];
   bigIdea: {
     headline: string;
     explanation: string;
@@ -69,8 +71,8 @@ export interface BiWeeklyPulseItem {
 }
 
 export const BI_WEEKLY_META = {
-  currentCycle: "Cycle #14 • Oct 25, 2026",
-  nextUpdateInDays: 14,
+  currentCycle: "Edition 1 • Oct 25, 2026",
+  lastUpdated: "Oct 25, 2026",
   pulseHeadline: "Reasoning Models, Autonomous Desktop Agents & Vibe Coding 2.0",
 };
 

@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Sparkles, BookOpen, Flame, X } from "lucide-react";
 import { BI_WEEKLY_META, BI_WEEKLY_PULSE_FEED } from "@/data/curriculum";
+import { getTotalXp, subscribeToProgress } from "@/lib/progress";
 
 export default function Navbar() {
   const [isPulseOpen, setIsPulseOpen] = useState(false);
+  const totalXp = useSyncExternalStore(subscribeToProgress, getTotalXp, () => 0);
 
   return (
     <>
@@ -42,7 +44,7 @@ export default function Navbar() {
             </button>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E2E8F0] text-xs font-semibold whitespace-nowrap text-[#0F172A]">
               <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-              <span>150 XP</span>
+              <span>{totalXp} XP</span>
             </div>
           </div>
         </div>

@@ -3,8 +3,17 @@
 import React, { useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import type { QuizQuestion } from "@/data/curriculum";
+import { completeLesson } from "@/lib/progress";
 
-export default function LessonQuiz({ questions }: { questions: QuizQuestion[] }) {
+export default function LessonQuiz({
+  lessonId,
+  xpReward,
+  questions,
+}: {
+  lessonId: string;
+  xpReward: number;
+  questions: QuizQuestion[];
+}) {
   const [answers, setAnswers] = useState<Record<string, number>>({});
 
   return (
@@ -29,7 +38,10 @@ export default function LessonQuiz({ questions }: { questions: QuizQuestion[] })
                 return (
                   <button
                     key={option.id}
-                    onClick={() => setAnswers((prev) => ({ ...prev, [question.id]: index }))}
+                    onClick={() => {
+                      setAnswers((prev) => ({ ...prev, [question.id]: index }));
+                      if (option.isCorrect) completeLesson(lessonId, xpReward);
+                    }}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center justify-between gap-4 cursor-pointer ${btnStyle}`}
                   >
                     <span className="text-sm font-medium text-[#0F172A]">{option.text}</span>

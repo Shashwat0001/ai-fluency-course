@@ -12,6 +12,7 @@ import {
   GraduationCap,
   BookMarked,
   Clock,
+  CalendarClock,
 } from "lucide-react";
 
 export async function generateStaticParams() {
@@ -63,6 +64,29 @@ export default async function LessonPage({ params }: PageProps<"/learn/[trackId]
             <span>Updated {lesson.lastUpdated}</span>
           </div>
         </header>
+
+        {lesson.isUpdatedBiWeekly && (
+          <aside className="mt-8 p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-900">
+            <div className="flex items-center gap-2 font-semibold">
+              <CalendarClock className="w-4 h-4"/>
+              <span>Fast-moving topic: accurate as of {lesson.lastUpdated}</span>
+            </div>
+            <p className="mt-1 leading-relaxed">
+              AI products, rankings and prices change every few weeks. Treat specific comparisons here as a snapshot, not a permanent fact.
+            </p>
+            {lesson.sources && lesson.sources.length > 0 && (
+              <ul className="mt-2 list-disc pl-5 space-y-1">
+                {lesson.sources.map((source) => (
+                  <li key={source.url}>
+                    <a href={source.url} target="_blank" rel="noopener noreferrer" className="underline">
+                      {source.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </aside>
+        )}
 
         <section className="mt-10 p-6 rounded-2xl bg-white border border-[#E2E8F0]">
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500">The Big Idea</p>
@@ -140,7 +164,7 @@ export default async function LessonPage({ params }: PageProps<"/learn/[trackId]
 
         <section className="mt-6 p-6 rounded-2xl bg-white border border-[#E2E8F0]">
           <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Check Your Intuition</p>
-          <LessonQuiz questions={lesson.quiz}/>
+          <LessonQuiz lessonId={lesson.id} xpReward={lesson.xpReward} questions={lesson.quiz}/>
         </section>
 
         <nav className="mt-10 flex items-center justify-between gap-4 text-sm font-semibold">
