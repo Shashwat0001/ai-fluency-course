@@ -95,6 +95,17 @@ The classic sections (`analogy`, `techConversation`, `realWorldApplication`, `ja
 - Set `caseSensitive: true` for acronyms, so `RAG` doesn't underline the word "rag".
 - The term's own lesson still defines it properly. The dictionary is a safety net for every other lesson.
 
+## The lesson flashcard deck
+
+Every lesson has a **Key terms** deck: tap-to-flip cards, opened from the lesson header at any time and offered again on the finish screen. It builds itself from four sources, in this order (12 cards at most):
+
+1. The lesson's **jargon card**.
+2. Cards in any **flashcards activity** in the lesson.
+3. The lesson's optional **`keyTerms`** list: `[{ term, meaning }]`. Use it for key ideas that aren't in the jargon dictionary, like the five parts of the prompt recipe.
+4. Every **jargon-dictionary term** the lesson mentions, in reading order.
+
+**If a deck looks thin, add `keyTerms`.** If two dictionary entries mean the same thing, give one a `sameAs` so the deck shows a single card.
+
 ## Publishing the AI Pulse (every two weeks)
 
 About 90 minutes per edition. Claude can draft it; a person must check every link and approve it.

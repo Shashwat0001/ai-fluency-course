@@ -30,6 +30,16 @@ function findEntry(match: string): GlossaryEntry | undefined {
   return loose && !loose.caseSensitive ? loose : undefined;
 }
 
+/** Every glossary entry mentioned in a text, in order of first appearance. */
+export function findGlossaryEntries(text: string): GlossaryEntry[] {
+  const found: GlossaryEntry[] = [];
+  for (const match of text.matchAll(MATCHER)) {
+    const entry = findEntry(match[0]);
+    if (entry && !found.includes(entry)) found.push(entry);
+  }
+  return found;
+}
+
 const GlossaryContext = createContext<(entry: GlossaryEntry) => void>(() => {});
 
 export function GlossaryProvider({ children }: { children: React.ReactNode }) {

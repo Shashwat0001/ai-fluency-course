@@ -110,6 +110,13 @@ export const TRACK_4: Track = {
         forLearning:
           "When an answer disappoints, **don't start a new chat**. Reply like you would to a colleague: \"Too formal. Make it sound like a WhatsApp message to a friend.\"",
       },
+      keyTerms: [
+        { term: "Role", meaning: "**Who the AI should act as**, e.g. \"You are an HR manager at a 200-person startup.\" It sets the tone and the expertise." },
+        { term: "Task", meaning: "**Exactly what the AI should produce**: an email, a table, five headline options." },
+        { term: "Context", meaning: "**The background it needs**: who it's for, what happened, why it matters. The biggest fix for generic answers." },
+        { term: "Format", meaning: "**What the answer should look like**: length, bullets or a table, language, tone." },
+        { term: "Limits", meaning: "**What the AI must avoid**, e.g. \"Don't promise a discount\" or \"Say 'not specified' instead of guessing.\"" },
+      ],
       jargonCard: {
         term: "Prompt (and System Prompt)",
         oneLineAnalogy:
