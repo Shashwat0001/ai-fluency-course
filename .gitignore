@@ -1,0 +1,13 @@
+# Local tools kept next to the project (portable Node.js / Git for Windows).
+# They live on your own computer; GitHub doesn't need a copy.
+/node/
+/mingit/
+
+# Build output and installed packages (also ignored inside ai-learning-website/)
+node_modules/
+.next/
+.vercel
+
+# OS clutter
+.DS_Store
+Thumbs.db
