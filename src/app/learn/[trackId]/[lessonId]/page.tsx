@@ -2,10 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import LessonQuiz from "@/components/LessonQuiz";
+import ActivityBlock from "@/components/activities/ActivityBlock";
 import { CURRICULUM_TRACKS } from "@/data/curriculum";
 import {
   ArrowLeft,
   ArrowRight,
+  ArrowUpRight,
   Lightbulb,
   MessagesSquare,
   Briefcase,
@@ -13,6 +15,7 @@ import {
   BookMarked,
   Clock,
   CalendarClock,
+  Library,
 } from "lucide-react";
 
 export async function generateStaticParams() {
@@ -79,19 +82,8 @@ export default async function LessonPage({ params }: LessonPageProps) {
               <span>Fast-moving topic: accurate as of {lesson.lastUpdated}</span>
             </div>
             <p className="mt-1 leading-relaxed">
-              AI products, rankings and prices change every few weeks. Treat specific comparisons here as a snapshot, not a permanent fact.
+              AI products, rankings and prices change every few weeks. Treat specific comparisons here as a snapshot, not a permanent fact. Sources are at the bottom of the page.
             </p>
-            {lesson.sources && lesson.sources.length > 0 && (
-              <ul className="mt-2 list-disc pl-5 space-y-1">
-                {lesson.sources.map((source) => (
-                  <li key={source.url}>
-                    <a href={source.url} target="_blank" rel="noopener noreferrer" className="underline">
-                      {source.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
           </aside>
         )}
 
@@ -101,78 +93,116 @@ export default async function LessonPage({ params }: LessonPageProps) {
           <p className="mt-3 text-base text-slate-600 leading-relaxed">{lesson.bigIdea.explanation}</p>
         </section>
 
-        <section className="mt-6 p-6 rounded-2xl bg-indigo-50/50 border border-indigo-100">
-          <div className="flex items-center gap-2 text-[#4F46E5]">
-            <Lightbulb className="w-5 h-5"/>
-            <span className="text-xs font-bold uppercase tracking-wider">The Everyday Analogy</span>
-          </div>
-          <h2 className="mt-2 text-xl font-bold">{lesson.analogy.title}</h2>
-          <p className="mt-3 text-base leading-relaxed font-medium">{lesson.analogy.metaphor}</p>
+        {lesson.analogy && (
+          <section className="mt-6 p-6 rounded-2xl bg-indigo-50/50 border border-indigo-100">
+            <div className="flex items-center gap-2 text-[#4F46E5]">
+              <Lightbulb className="w-5 h-5"/>
+              <span className="text-xs font-bold uppercase tracking-wider">The Everyday Analogy</span>
+            </div>
+            <h2 className="mt-2 text-xl font-bold">{lesson.analogy.title}</h2>
+            <p className="mt-3 text-base leading-relaxed font-medium">{lesson.analogy.metaphor}</p>
 
-          <div className="mt-5 grid gap-3">
-            {lesson.analogy.visualComparison.map((row) => (
-              <div key={row.everydayItem} className="grid sm:grid-cols-2 gap-2 sm:gap-4 p-4 rounded-xl bg-white border border-indigo-100 text-sm">
-                <span className="font-semibold">{row.everydayItem}</span>
-                <span className="text-slate-600">{row.aiEquivalent}</span>
+            <div className="mt-5 grid gap-3">
+              {lesson.analogy.visualComparison.map((row) => (
+                <div key={row.everydayItem} className="grid sm:grid-cols-2 gap-2 sm:gap-4 p-4 rounded-xl bg-white border border-indigo-100 text-sm">
+                  <span className="font-semibold">{row.everydayItem}</span>
+                  <span className="text-slate-600">{row.aiEquivalent}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {lesson.activities?.map((activity, index) => (
+          <ActivityBlock key={`${activity.type}-${index}`} activity={activity}/>
+        ))}
+
+        {lesson.techConversation && (
+          <section className="mt-6 p-6 rounded-2xl bg-white border border-[#E2E8F0]">
+            <div className="flex items-center gap-2 text-slate-500">
+              <MessagesSquare className="w-5 h-5"/>
+              <span className="text-xs font-bold uppercase tracking-wider">Overheard in a Tech Meeting</span>
+            </div>
+            <p className="mt-2 text-sm text-slate-500">{lesson.techConversation.context}</p>
+
+            <div className="mt-4 space-y-3">
+              {[lesson.techConversation.speakerA, lesson.techConversation.speakerB].map((speaker) => (
+                <div key={speaker.role} className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{speaker.role}</p>
+                  <p className="mt-1 text-base">&ldquo;{speaker.quote}&rdquo;</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 p-4 rounded-xl bg-emerald-50 text-emerald-900">
+              <p className="text-xs font-bold uppercase tracking-wider">In Plain English</p>
+              <p className="mt-1 text-base leading-relaxed">{lesson.techConversation.plainEnglishTranslation}</p>
+            </div>
+          </section>
+        )}
+
+        {lesson.realWorldApplication && (
+          <section className="mt-6 grid sm:grid-cols-2 gap-4">
+            <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
+              <div className="flex items-center gap-2 text-slate-500">
+                <Briefcase className="w-5 h-5"/>
+                <span className="text-xs font-bold uppercase tracking-wider">Use It at Work</span>
               </div>
-            ))}
-          </div>
-        </section>
+              <p className="mt-3 text-sm text-slate-700 leading-relaxed">{lesson.realWorldApplication.forWork}</p>
+            </div>
+            <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
+              <div className="flex items-center gap-2 text-slate-500">
+                <GraduationCap className="w-5 h-5"/>
+                <span className="text-xs font-bold uppercase tracking-wider">Use It to Learn</span>
+              </div>
+              <p className="mt-3 text-sm text-slate-700 leading-relaxed">{lesson.realWorldApplication.forLearning}</p>
+            </div>
+          </section>
+        )}
+
+        {lesson.jargonCard && (
+          <section className="mt-6 p-6 rounded-2xl bg-[#0F172A] text-white">
+            <div className="flex items-center gap-2 text-indigo-300">
+              <BookMarked className="w-5 h-5"/>
+              <span className="text-xs font-bold uppercase tracking-wider">Jargon Card</span>
+            </div>
+            <h2 className="mt-2 text-xl font-bold">{lesson.jargonCard.term}</h2>
+            <p className="mt-2 text-base text-slate-300 leading-relaxed">{lesson.jargonCard.oneLineAnalogy}</p>
+            <p className="mt-4 text-xs font-bold uppercase tracking-wider text-indigo-300">Say This in Your Next Meeting</p>
+            <p className="mt-1 text-base italic">{lesson.jargonCard.meetingDropLine}</p>
+          </section>
+        )}
 
         <section className="mt-6 p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-          <div className="flex items-center gap-2 text-slate-500">
-            <MessagesSquare className="w-5 h-5"/>
-            <span className="text-xs font-bold uppercase tracking-wider">Overheard in a Tech Meeting</span>
-          </div>
-          <p className="mt-2 text-sm text-slate-500">{lesson.techConversation.context}</p>
-
-          <div className="mt-4 space-y-3">
-            {[lesson.techConversation.speakerA, lesson.techConversation.speakerB].map((speaker) => (
-              <div key={speaker.role} className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                <p className="text-xs font-bold uppercase tracking-wider text-slate-500">{speaker.role}</p>
-                <p className="mt-1 text-base">&ldquo;{speaker.quote}&rdquo;</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-4 p-4 rounded-xl bg-emerald-50 text-emerald-900">
-            <p className="text-xs font-bold uppercase tracking-wider">In Plain English</p>
-            <p className="mt-1 text-base leading-relaxed">{lesson.techConversation.plainEnglishTranslation}</p>
-          </div>
-        </section>
-
-        <section className="mt-6 grid sm:grid-cols-2 gap-4">
-          <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-            <div className="flex items-center gap-2 text-slate-500">
-              <Briefcase className="w-5 h-5"/>
-              <span className="text-xs font-bold uppercase tracking-wider">Use It at Work</span>
-            </div>
-            <p className="mt-3 text-sm text-slate-700 leading-relaxed">{lesson.realWorldApplication.forWork}</p>
-          </div>
-          <div className="p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-            <div className="flex items-center gap-2 text-slate-500">
-              <GraduationCap className="w-5 h-5"/>
-              <span className="text-xs font-bold uppercase tracking-wider">Use It to Learn</span>
-            </div>
-            <p className="mt-3 text-sm text-slate-700 leading-relaxed">{lesson.realWorldApplication.forLearning}</p>
-          </div>
-        </section>
-
-        <section className="mt-6 p-6 rounded-2xl bg-[#0F172A] text-white">
-          <div className="flex items-center gap-2 text-indigo-300">
-            <BookMarked className="w-5 h-5"/>
-            <span className="text-xs font-bold uppercase tracking-wider">Jargon Card</span>
-          </div>
-          <h2 className="mt-2 text-xl font-bold">{lesson.jargonCard.term}</h2>
-          <p className="mt-2 text-base text-slate-300 leading-relaxed">{lesson.jargonCard.oneLineAnalogy}</p>
-          <p className="mt-4 text-xs font-bold uppercase tracking-wider text-indigo-300">Say This in Your Next Meeting</p>
-          <p className="mt-1 text-base italic">{lesson.jargonCard.meetingDropLine}</p>
-        </section>
-
-        <section className="mt-6 p-6 rounded-2xl bg-white border border-[#E2E8F0]">
-          <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">Check Your Intuition</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Check Your Intuition</p>
+          <p className="mt-1 mb-5 text-sm text-slate-500">
+            Answer all {lesson.quiz.length} correctly to finish the lesson and earn {lesson.xpReward} XP. Wrong answers explain themselves, so you can try again.
+          </p>
           <LessonQuiz lessonId={lesson.id} xpReward={lesson.xpReward} questions={lesson.quiz}/>
         </section>
+
+        {lesson.sources && lesson.sources.length > 0 && (
+          <section className="mt-6 p-6 rounded-2xl bg-white border border-[#E2E8F0]">
+            <div className="flex items-center gap-2 text-slate-500">
+              <Library className="w-5 h-5"/>
+              <span className="text-xs font-bold uppercase tracking-wider">Sources & Further Reading</span>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {lesson.sources.map((source) => (
+                <li key={source.url}>
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-start gap-1 text-sm text-[#4F46E5] hover:underline"
+                  >
+                    {source.label} <ArrowUpRight className="w-3.5 h-3.5 mt-0.5 shrink-0"/>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         <nav className="mt-10 flex items-center justify-between gap-4 text-sm font-semibold">
           {prevLesson ? (

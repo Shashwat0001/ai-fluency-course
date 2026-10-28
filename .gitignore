@@ -3,10 +3,16 @@
 /node/
 /mingit/
 
-# Build output and installed packages (also ignored inside ai-learning-website/)
+# Installed packages and build output
 node_modules/
 .next/
 .vercel
+next-env.d.ts
+*.tsbuildinfo
+
+# Secrets: keep real values out of GitHub; the template is fine
+.env*
+!.env.example
 
 # OS clutter
 .DS_Store

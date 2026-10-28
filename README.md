@@ -4,9 +4,12 @@ An intuition-first AI course for people with zero technical background.
 
 ## Where things are
 
-- `ai-learning-website/`: the website (Next.js). This is the folder Vercel builds.
-- `ai-learning-website/src/data/curriculum.ts`: **all course content** (tracks, lessons, quizzes, AI Pulse). Most edits happen here.
-- `ai-learning-website/src/app/`: the pages (homepage and the lesson player at `learn/[trackId]/[lessonId]`).
+- `src/data/tracks/`: **the lessons**, one file per track. Most edits happen here.
+- `src/data/pulse.ts`: the current AI Pulse edition.
+- `src/data/types.ts`: what fields a lesson and each activity format can have.
+- `src/components/activities/`: the interactive formats (sorting, simulations, flashcards, calculator and more).
+- `src/app/`: the pages (the homepage and the lesson player at `learn/[trackId]/[lessonId]`).
+- `CONTENT_GUIDE.md`: the lesson checklist and the two-weekly AI Pulse routine.
 
 ## How we work
 
@@ -17,7 +20,6 @@ An intuition-first AI course for people with zero technical background.
 ## Running it on your own computer (optional)
 
 ```bash
-cd ai-learning-website
 npm install
 npm run dev
 ```
