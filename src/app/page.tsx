@@ -6,9 +6,11 @@ import Navbar from "@/components/Navbar";
 import Logo from "@/components/Logo";
 import { CreatorCard } from "@/components/CreatorCard";
 import { GlossaryInlineTerm, GlossaryProvider, RichText } from "@/components/lesson/Glossary";
+import CertificateModal, { buildLinkedInCertificateShare } from "@/components/CertificateModal";
 import { CURRICULUM_TRACKS, BI_WEEKLY_META } from "@/data/curriculum";
 import { CREATOR } from "@/data/creator";
 import { getCompletedKey, getInProgressLessonId, subscribeToProgress } from "@/lib/progress";
+import type { Track } from "@/data/types";
 import {
   ArrowRight,
   Award,
@@ -24,6 +26,7 @@ import {
   Hand,
   Layers,
   Lightbulb,
+  Lock,
   Newspaper,
   PanelsTopLeft,
   Play,
@@ -108,6 +111,7 @@ export default function HomePage() {
   const [demoShakeCount, setDemoShakeCount] = useState(0);
   const [previewProgress, setPreviewProgress] = useState(false);
   const [copiedTrackId, setCopiedTrackId] = useState<string | null>(null);
+  const [activeCertificateTrack, setActiveCertificateTrack] = useState<Track | null>(null);
 
   const completedKey = useSyncExternalStore(subscribeToProgress, getCompletedKey, () => "");
   const completed = new Set(completedKey ? completedKey.split(",").filter(Boolean) : []);
@@ -141,13 +145,12 @@ export default function HomePage() {
     }
   };
 
-  const handleLinkedInShare = (trackId: string, badgeName: string, trackTitle: string) => {
-    const shareUrl = typeof window !== "undefined" ? window.location.origin : "https://aifluency.in";
-    const postText = `I earned the "${badgeName}" digital credential (${trackTitle}) on AI Fluency! Built to master practical AI mental models, LLMs, and agent workflows without the jargon. 🚀 ${shareUrl}`;
+  const handleLinkedInShare = (track: Track) => {
+    const { postText } = buildLinkedInCertificateShare(track);
     navigator.clipboard?.writeText(postText).catch(() => {});
-    setCopiedTrackId(trackId);
+    setCopiedTrackId(track.id);
     setTimeout(() => {
-      setCopiedTrackId((prev) => (prev === trackId ? null : prev));
+      setCopiedTrackId((prev) => (prev === track.id ? null : prev));
     }, 3500);
   };
 
@@ -462,11 +465,7 @@ export default function HomePage() {
                 const target = track.lessons.find((lesson) => !completed.has(lesson.id)) ?? track.lessons[0];
                 const finished = total > 0 && done === total;
 
-                const shareUrl = "https://aifluency.in";
-                const shareSummary = `I earned the "${track.badgeName}" digital credential (${track.title}) on AI Fluency! 🚀`;
-                const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
-                  shareUrl
-                )}&summary=${encodeURIComponent(shareSummary)}`;
+                const { linkedInUrl } = buildLinkedInCertificateShare(track);
                 const isCopied = copiedTrackId === track.id;
 
                 return (
@@ -538,8 +537,14 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    {/* Glowing Digital Certificate Badge + One-Click Share to LinkedIn */}
-                    <div className="mt-4 p-4 rounded-2xl bg-ink-950 text-white border border-cyber-400/50 badge-cyber-glow relative overflow-hidden">
+                    {/* Digital Certificate Badge: Locked until track is completed; unlocks Certificate + Share to LinkedIn once finished */}
+                    <div
+                      className={`mt-4 p-4 rounded-2xl text-white relative overflow-hidden transition-all ${
+                        finished
+                          ? "bg-ink-950 border border-cyber-400/60 badge-cyber-glow"
+                          : "bg-ink-900/95 border border-ink-700/80"
+                      }`}
+                    >
                       <div
                         aria-hidden="true"
                         className="pointer-events-none absolute -right-8 -top-8 w-24 h-24 rounded-full bg-cyber-500/20 blur-xl"
@@ -549,47 +554,75 @@ export default function HomePage() {
                         className="pointer-events-none absolute -left-8 -bottom-8 w-24 h-24 rounded-full bg-neon-500/20 blur-xl"
                       />
                       <div className="relative flex items-start justify-between gap-2.5">
-                        <div className="flex items-center gap-2.5">
-                          <span className="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-cyber-400/25 to-neon-500/25 border border-cyber-400/50 text-marigold-300 shrink-0">
-                            <Award className="w-5 h-5" />
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span
+                            className={`inline-flex items-center justify-center w-9 h-9 rounded-xl border shrink-0 ${
+                              finished
+                                ? "bg-gradient-to-br from-cyber-400/25 to-neon-500/25 border-cyber-400/50 text-marigold-300"
+                                : "bg-white/5 border-white/15 text-ink-400"
+                            }`}
+                          >
+                            {finished ? <Award className="w-5 h-5" /> : <Lock className="w-4 h-4" />}
                           </span>
-                          <div>
-                            <span className="block text-[10px] font-extrabold uppercase tracking-widest text-cyber-300">
-                              {finished ? "★ Unlocked Digital Certificate" : "Digital Certificate Badge"}
+                          <div className="min-w-0">
+                            <span
+                              className={`block text-[10px] font-extrabold uppercase tracking-widest ${
+                                finished ? "text-cyber-300" : "text-ink-400"
+                              }`}
+                            >
+                              {finished ? "★ Certificate Unlocked" : "Track Certificate Locked"}
                             </span>
-                            <span className="font-display text-sm font-extrabold text-white">{track.badgeName}</span>
+                            <span className="font-display text-sm font-extrabold text-white block truncate">
+                              {track.badgeName}
+                            </span>
                           </div>
                         </div>
                         <span
-                          className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider border ${
+                          className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold uppercase tracking-wider border shrink-0 ${
                             finished
                               ? "bg-mint-500/20 border-mint-400/50 text-mint-300"
-                              : "bg-neon-500/20 border-neon-400/40 text-neon-200"
+                              : "bg-white/5 border-white/15 text-ink-300"
                           }`}
                         >
                           {finished ? "Earned" : `${done}/${total}`}
                         </span>
                       </div>
 
-                      <a
-                        href={linkedInUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => handleLinkedInShare(track.id, track.badgeName, track.title)}
-                        className="mt-3 w-full h-9 px-3 rounded-xl bg-gradient-to-r from-cyber-500/20 via-brand-500/25 to-neon-500/20 hover:from-cyber-500 hover:to-neon-500 border border-cyber-400/50 hover:text-ink-950 text-cyber-200 text-xs font-extrabold uppercase tracking-wider inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                      >
-                        {isCopied ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            <span>Copied Post & Opening LinkedIn</span>
-                          </>
-                        ) : (
-                          <>
-                            <Share2 className="w-3.5 h-3.5" />
-                            <span>Share to LinkedIn</span>
-                          </>
-                        )}
-                      </a>
+                      {finished ? (
+                        <div className="relative mt-3 flex flex-col sm:flex-row gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setActiveCertificateTrack(track)}
+                            className="flex-1 h-9 px-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-extrabold uppercase tracking-wider inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                          >
+                            <Award className="w-3.5 h-3.5 text-marigold-300 shrink-0" />
+                            <span>View Certificate</span>
+                          </button>
+                          <a
+                            href={linkedInUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => handleLinkedInShare(track)}
+                            className="flex-1 h-9 px-3 rounded-xl bg-gradient-to-r from-cyber-500 to-neon-500 hover:from-cyber-400 hover:to-neon-400 text-ink-950 text-xs font-extrabold uppercase tracking-wider inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-[0_0_14px_rgba(0,229,255,0.35)]"
+                          >
+                            {isCopied ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate">Copied & Opening</span>
+                              </>
+                            ) : (
+                              <>
+                                <Share2 className="w-3.5 h-3.5 shrink-0" />
+                                <span className="truncate">Share to LinkedIn</span>
+                              </>
+                            )}
+                          </a>
+                        </div>
+                      ) : (
+                        <p className="relative mt-2.5 text-[11px] text-ink-300 leading-snug">
+                          Complete {total - done === 1 ? "1 remaining lesson" : `all ${total} lessons (${total - done} left)`} in Track 0{track.number} to earn your certificate &amp; unlock <span className="text-cyber-300 font-bold">Share to LinkedIn</span>.
+                        </p>
+                      )}
                     </div>
 
                     {/* Primary Track Action Link */}
@@ -600,7 +633,7 @@ export default function HomePage() {
                       >
                         <span>
                           {finished
-                            ? "Badge earned · Review lessons"
+                            ? "Certificate earned · Review lessons"
                             : done > 0
                               ? `${done} of ${total} done · Continue track`
                               : "Start track"}
@@ -675,6 +708,13 @@ export default function HomePage() {
               <ArrowRight className="w-4 h-4 text-cyber-300 shrink-0 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
+        )}
+
+        {activeCertificateTrack && (
+          <CertificateModal
+            track={activeCertificateTrack}
+            onClose={() => setActiveCertificateTrack(null)}
+          />
         )}
       </div>
     </GlossaryProvider>

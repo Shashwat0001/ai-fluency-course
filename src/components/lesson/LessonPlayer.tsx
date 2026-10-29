@@ -2,12 +2,13 @@
 
 import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, Clock, Layers3, PartyPopper, RotateCcw, Rows3, Share2, Trophy, X, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, Award, Check, Clock, Layers3, Lock, PartyPopper, RotateCcw, Rows3, Share2, Trophy, X, Zap } from "lucide-react";
 import type { Lesson } from "@/data/types";
 import { CURRICULUM_TRACKS } from "@/data/curriculum";
-import { completeLesson } from "@/lib/progress";
+import { completeLesson, getCompletedKey, subscribeToProgress } from "@/lib/progress";
 import ActivityBlock from "@/components/activities/ActivityBlock";
 import { CreatorStrip } from "@/components/CreatorCard";
+import CertificateModal, { buildLinkedInCertificateShare } from "@/components/CertificateModal";
 import { buildLessonDeck, DeckButton, LessonDeck } from "./LessonDeck";
 import QuizQuestionCard from "./QuizQuestionCard";
 import { GlossaryDemoTrigger, GlossaryProvider, RichText } from "./Glossary";
@@ -98,7 +99,9 @@ export default function LessonPlayer({
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [solved, setSolved] = useState<Set<string>>(new Set());
   const [copiedBadge, setCopiedBadge] = useState(false);
+  const [certificateOpen, setCertificateOpen] = useState(false);
   const savedStep = useSyncExternalStore(noSubscribe, () => readSavedStep(lesson.id), () => null);
+  const completedKey = useSyncExternalStore(subscribeToProgress, getCompletedKey, () => "");
   const currentTrack = useMemo(() => CURRICULUM_TRACKS.find((t) => t.id === trackId), [trackId]);
 
   const lastIndex = steps.length - 1;
@@ -196,9 +199,21 @@ export default function LessonPlayer({
 
   const allSolved = solved.size === quizTotal;
   const badgeTitle = currentTrack?.badgeName ?? "AI Fluency Credential";
-  const shareUrl = "https://aifluency.in";
-  const shareText = `Just completed "${lesson.title}" and progressed toward the ${badgeTitle} credential on AI Fluency! 🚀`;
-  const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`;
+
+  const completedSet = useMemo(() => {
+    const set = new Set(completedKey ? completedKey.split(",").filter(Boolean) : []);
+    if (allSolved) set.add(lesson.id);
+    return set;
+  }, [completedKey, allSolved, lesson.id]);
+
+  const completedInTrack = currentTrack
+    ? currentTrack.lessons.filter((l) => completedSet.has(l.id)).length
+    : 0;
+  const isTrackComplete = currentTrack
+    ? currentTrack.lessons.length > 0 && completedInTrack >= currentTrack.lessons.length
+    : false;
+
+  const shareData = currentTrack ? buildLinkedInCertificateShare(currentTrack) : null;
 
   const doneScreen = (
     <section className="space-y-6 min-w-0">
@@ -225,40 +240,80 @@ export default function LessonPlayer({
         )}
       </div>
 
-      {/* Glowing Digital Certificate Badge + Share to LinkedIn */}
+      {/* Track Certificate status: Unlocks Certificate + Share to LinkedIn only once all lessons in the track are completed */}
       {currentTrack && (
-        <div className="relative overflow-hidden p-5 sm:p-6 rounded-[var(--radius-card)] bg-ink-950 text-white border border-cyber-400/50 badge-cyber-glow">
+        <div
+          className={`relative overflow-hidden p-5 sm:p-6 rounded-[var(--radius-card)] text-white border ${
+            isTrackComplete
+              ? "bg-ink-950 border-cyber-400/60 badge-cyber-glow"
+              : "bg-ink-900/95 border-ink-700/80"
+          }`}
+        >
           <div aria-hidden="true" className="pointer-events-none absolute -top-12 -right-12 w-40 h-40 rounded-full bg-cyber-500/20 blur-2xl" />
           <div aria-hidden="true" className="pointer-events-none absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-neon-500/20 blur-2xl" />
           <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-3.5">
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-cyber-400/25 to-neon-500/25 border border-cyber-400/50 text-cyber-300 shrink-0 shadow-[0_0_16px_rgba(0,229,255,0.3)]">
-                <Trophy className="w-6 h-6 text-marigold-300" />
+            <div className="flex items-start gap-3.5 min-w-0">
+              <span
+                className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl border shrink-0 ${
+                  isTrackComplete
+                    ? "bg-gradient-to-br from-cyber-400/25 to-neon-500/25 border-cyber-400/50 text-cyber-300 shadow-[0_0_16px_rgba(0,229,255,0.3)]"
+                    : "bg-white/5 border-white/15 text-ink-400"
+                }`}
+              >
+                {isTrackComplete ? (
+                  <Trophy className="w-6 h-6 text-marigold-300" />
+                ) : (
+                  <Lock className="w-5 h-5 text-ink-400" />
+                )}
               </span>
               <div className="min-w-0">
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest text-cyber-300">
-                  Track {trackNumber} Digital Credential · Lesson {lessonIndex + 1}/{lessonCount}
+                <span
+                  className={`inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest ${
+                    isTrackComplete ? "text-cyber-300" : "text-ink-400"
+                  }`}
+                >
+                  {isTrackComplete
+                    ? `★ Track 0${trackNumber} Certificate Unlocked · ${completedInTrack}/${lessonCount} Done`
+                    : `Track 0${trackNumber} Certificate Progress · ${completedInTrack}/${lessonCount} Lessons`}
                 </span>
                 <h3 className="mt-0.5 text-xl font-extrabold text-white break-words">{badgeTitle}</h3>
                 <p className="mt-0.5 text-xs text-ink-300">
-                  Verified fluency milestone in {currentTrack.title}
+                  {isTrackComplete
+                    ? `You mastered every lesson in ${currentTrack.title}! Claim your certificate and share to LinkedIn.`
+                    : `Complete ${
+                        lessonCount - completedInTrack === 1
+                          ? "1 remaining lesson"
+                          : `all ${lessonCount} lessons (${lessonCount - completedInTrack} left)`
+                      } in this track to unlock your "${badgeTitle}" certificate & Share to LinkedIn.`}
                 </p>
               </div>
             </div>
-            <a
-              href={linkedInHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => {
-                navigator.clipboard?.writeText(`${shareText} ${shareUrl}`).catch(() => {});
-                setCopiedBadge(true);
-                setTimeout(() => setCopiedBadge(false), 3000);
-              }}
-              className="btn-cyber inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-gradient-to-r from-cyber-500 to-neon-600 text-ink-950 font-extrabold text-xs uppercase tracking-wider hover:from-cyber-400 hover:to-neon-500 shrink-0 cursor-pointer"
-            >
-              {copiedBadge ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
-              <span>{copiedBadge ? "Copied & Opening LinkedIn" : "Share to LinkedIn"}</span>
-            </a>
+            {isTrackComplete && shareData && (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setCertificateOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-extrabold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  <Award className="w-4 h-4 text-marigold-300" />
+                  <span>View Certificate</span>
+                </button>
+                <a
+                  href={shareData.linkedInUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    navigator.clipboard?.writeText(shareData.postText).catch(() => {});
+                    setCopiedBadge(true);
+                    setTimeout(() => setCopiedBadge(false), 3000);
+                  }}
+                  className="btn-cyber inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-gradient-to-r from-cyber-500 to-neon-600 text-ink-950 font-extrabold text-xs uppercase tracking-wider hover:from-cyber-400 hover:to-neon-500 shrink-0 cursor-pointer"
+                >
+                  {copiedBadge ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                  <span>{copiedBadge ? "Copied & Opening LinkedIn" : "Share to LinkedIn"}</span>
+                </a>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -457,6 +512,9 @@ export default function LessonPlayer({
         </div>
       </nav>
       {deckOpen && <LessonDeck cards={deck} lessonTitle={lesson.title} onClose={() => setDeckOpen(false)}/>}
+      {certificateOpen && currentTrack && (
+        <CertificateModal track={currentTrack} onClose={() => setCertificateOpen(false)} />
+      )}
     </GlossaryProvider>
   );
 }
