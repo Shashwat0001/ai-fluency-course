@@ -29,8 +29,8 @@ export default function Navbar() {
   return (
     <>
       <header className="sticky top-0 z-40 w-full bg-paper/90 backdrop-blur-md border-b border-ink-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2">
-          <Link href="/" className="group select-none shrink-0" aria-label="AI Fluency home">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-1.5 sm:gap-2 min-w-0">
+          <Link href="/" className="group select-none shrink-0 min-w-0" aria-label="AI Fluency home">
             <Logo/>
           </Link>
 
@@ -40,12 +40,12 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 min-w-0">
             <button
               onClick={() => setIsPulseOpen(true)}
-              className="flex items-center gap-2 h-9 px-3 rounded-full text-xs font-bold whitespace-nowrap bg-white text-ink border border-ink-200 hover:border-cyber-400 hover:shadow-[0_0_12px_-2px_rgba(0,229,255,0.35)] transition-all cursor-pointer"
+              className="flex items-center gap-1.5 sm:gap-2 h-8 sm:h-9 px-2.5 sm:px-3 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap bg-white text-ink border border-ink-200 hover:border-cyber-400 hover:shadow-[0_0_12px_-2px_rgba(0,229,255,0.35)] transition-all cursor-pointer shrink-0"
             >
-              <span className="relative flex w-2 h-2">
+              <span className="relative flex w-2 h-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-mint-400 opacity-75 animate-ping" />
                 <span className="relative inline-flex w-2 h-2 rounded-full bg-mint-500" />
               </span>
@@ -53,21 +53,22 @@ export default function Navbar() {
             </button>
 
             {/* Gamified Visual XP Progress Bar Widget */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <button
                 type="button"
                 onClick={() => setIsXpPopoverOpen((prev) => !prev)}
                 aria-label={`XP Progress: ${totalXp} XP, Level ${currentLevel}, ${completedCount} of ${ALL_LESSONS.length} lessons completed`}
-                className="group flex items-center gap-2.5 h-10 pl-2.5 pr-3 rounded-xl bg-ink-950 text-white border border-cyber-500/40 hover:border-cyber-400 shadow-[0_0_15px_-4px_rgba(0,229,255,0.35)] transition-all cursor-pointer"
+                className="group flex items-center gap-1.5 sm:gap-2.5 h-8 sm:h-10 pl-2 pr-2.5 sm:pl-2.5 sm:pr-3 rounded-xl bg-ink-950 text-white border border-cyber-500/40 hover:border-cyber-400 shadow-[0_0_15px_-4px_rgba(0,229,255,0.35)] transition-all cursor-pointer"
               >
-                <span className="inline-flex items-center justify-center w-6 h-6 rounded-lg bg-gradient-to-br from-cyber-500/25 to-neon-500/25 border border-cyber-400/40 text-cyber-300 shrink-0">
-                  <Zap className="w-3.5 h-3.5 fill-marigold-400 text-marigold-400" />
+                <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-md sm:rounded-lg bg-gradient-to-br from-cyber-500/25 to-neon-500/25 border border-cyber-400/40 text-cyber-300 shrink-0">
+                  <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-marigold-400 text-marigold-400" />
                 </span>
-                <div className="flex flex-col justify-center min-w-[108px] sm:min-w-[136px]">
-                  <div className="flex items-center justify-between gap-2 text-[11px] font-extrabold leading-none">
-                    <span className="tabular-nums text-white">{totalXp} XP</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-cyber-300 tabular-nums">
-                      LVL {currentLevel} · {completedCount}/{ALL_LESSONS.length}
+                <div className="flex flex-col justify-center min-w-[68px] sm:min-w-[136px]">
+                  <div className="flex items-center justify-between gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-extrabold leading-none">
+                    <span className="tabular-nums text-white whitespace-nowrap">{totalXp} XP</span>
+                    <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-cyber-300 tabular-nums whitespace-nowrap">
+                      LVL {currentLevel}
+                      <span className="hidden sm:inline"> · {completedCount}/{ALL_LESSONS.length}</span>
                     </span>
                   </div>
                   <div
@@ -75,7 +76,7 @@ export default function Navbar() {
                     aria-valuemin={0}
                     aria-valuemax={XP_PER_LEVEL}
                     aria-valuenow={xpIntoLevel}
-                    className="mt-1.5 w-full h-2 rounded-full bg-ink-800 p-[1px] overflow-hidden border border-white/10"
+                    className="mt-1 sm:mt-1.5 w-full h-1.5 sm:h-2 rounded-full bg-ink-800 p-[1px] overflow-hidden border border-white/10"
                   >
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-cyber-400 via-brand-400 to-neon-400 shadow-[0_0_8px_#00e5ff] transition-all duration-500"
@@ -94,7 +95,7 @@ export default function Navbar() {
                     role="dialog"
                     aria-label="Your AI Fluency XP Progress"
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute right-4 sm:right-6 top-16 w-72 p-4 rounded-2xl bg-ink-950/90 backdrop-blur-xl border border-cyber-400/50 text-white shadow-[0_16px_40px_-8px_rgba(0,0,0,0.55),0_0_24px_-4px_rgba(0,229,255,0.3)] tooltip-pop"
+                    className="absolute right-3 sm:right-6 top-14 sm:top-16 w-[min(18rem,calc(100vw-1.5rem))] p-4 rounded-2xl bg-ink-950/90 backdrop-blur-xl border border-cyber-400/50 text-white shadow-[0_16px_40px_-8px_rgba(0,0,0,0.55),0_0_24px_-4px_rgba(0,229,255,0.3)] tooltip-pop"
                   >
                     <div className="flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest text-cyber-300">

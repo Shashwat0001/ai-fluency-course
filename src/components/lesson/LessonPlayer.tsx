@@ -153,7 +153,7 @@ export default function LessonPlayer({
   );
 
   const intro = (
-    <header>
+    <header className="min-w-0">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-xs font-bold uppercase tracking-wider text-brand-700">
           Track {trackNumber} · Lesson {lessonIndex + 1} of {lessonCount}
@@ -165,7 +165,7 @@ export default function LessonPlayer({
                 key={item.id}
                 href={lessonHref(item.id)}
                 title={`Lesson ${idx + 1}: ${item.title}`}
-                className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold transition-colors ${
+                className={`inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full text-[11px] sm:text-xs font-bold transition-colors ${
                   idx === lessonIndex
                     ? "bg-brand-600 text-white"
                     : "bg-white border border-ink-200 text-ink-600 hover:border-brand-300 hover:text-brand-700"
@@ -177,15 +177,17 @@ export default function LessonPlayer({
           </div>
         )}
       </div>
-      <h1 className="mt-4 text-[2.25rem] sm:text-5xl font-extrabold leading-[1.05] text-ink">{lesson.title}</h1>
-      <p className="mt-3 text-lg sm:text-xl text-ink-600 leading-snug">{lesson.subtitle}</p>
-      <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-bold">
+      <h1 className="mt-3 sm:mt-4 text-[1.75rem] sm:text-5xl font-extrabold leading-[1.1] sm:leading-[1.05] text-ink break-words">
+        {lesson.title}
+      </h1>
+      <p className="mt-2.5 sm:mt-3 text-base sm:text-xl text-ink-600 leading-snug break-words">{lesson.subtitle}</p>
+      <div className="mt-4 sm:mt-5 flex flex-wrap items-center gap-2 text-xs font-bold">
         <span className="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-white border border-ink-200 text-ink-600"><Clock className="w-3.5 h-3.5"/> {lesson.durationMinutes} min</span>
         <span className="inline-flex items-center gap-1 h-7 px-2.5 rounded-full bg-marigold-100 text-marigold-900"><Zap className="w-3.5 h-3.5 fill-marigold-500 text-marigold-600"/> +{lesson.xpReward} XP</span>
         <span className="inline-flex items-center h-7 px-1 text-ink-500 font-semibold">Updated {lesson.lastUpdated}</span>
       </div>
       {lesson.isUpdatedBiWeekly && (
-        <div className="mt-6">
+        <div className="mt-5 sm:mt-6">
           <FastMovingNotice lastUpdated={lesson.lastUpdated}/>
         </div>
       )}
@@ -194,13 +196,13 @@ export default function LessonPlayer({
 
   const allSolved = solved.size === quizTotal;
   const badgeTitle = currentTrack?.badgeName ?? "AI Fluency Credential";
-  const shareUrl = typeof window !== "undefined" ? window.location.origin : "https://aifluency.in";
+  const shareUrl = "https://aifluency.in";
   const shareText = `Just completed "${lesson.title}" and progressed toward the ${badgeTitle} credential on AI Fluency! 🚀`;
   const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`;
 
   const doneScreen = (
-    <section className="space-y-6">
-      <div className="relative overflow-hidden p-6 sm:p-7 rounded-[var(--radius-card)] bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-[var(--shadow-card)] [--rt-strong:#fff] [--rt-hl-text:var(--color-ink)]">
+    <section className="space-y-6 min-w-0">
+      <div className="relative overflow-hidden p-5 sm:p-7 rounded-[var(--radius-card)] bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-[var(--shadow-card)] [--rt-strong:#fff] [--rt-hl-text:var(--color-ink)]">
         <span aria-hidden="true" className="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-marigold-400/30 blur-2xl"/>
         <div className="relative flex items-center justify-between gap-3">
           <PartyPopper className="w-9 h-9 text-marigold-300"/>
@@ -210,11 +212,11 @@ export default function LessonPlayer({
             </span>
           )}
         </div>
-        <h2 className="relative mt-4 text-3xl font-extrabold">{allSolved ? "Lesson complete!" : "Almost there"}</h2>
+        <h2 className="relative mt-4 text-2xl sm:text-3xl font-extrabold">{allSolved ? "Lesson complete!" : "Almost there"}</h2>
         {allSolved ? (
           <div className="relative mt-4 p-4 rounded-2xl bg-white/10 border border-white/15">
             <p className="text-xs font-bold uppercase tracking-wider text-marigold-300">The one thing to remember</p>
-            <p className="mt-1.5 text-[17px] font-semibold leading-snug"><RichText text={lesson.bigIdea.headline} glossary={false}/></p>
+            <p className="mt-1.5 text-[16px] sm:text-[17px] font-semibold leading-snug"><RichText text={lesson.bigIdea.headline} glossary={false}/></p>
           </div>
         ) : (
           <p className="relative mt-2 text-base text-brand-100 leading-relaxed">
@@ -233,11 +235,11 @@ export default function LessonPlayer({
               <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-cyber-400/25 to-neon-500/25 border border-cyber-400/50 text-cyber-300 shrink-0 shadow-[0_0_16px_rgba(0,229,255,0.3)]">
                 <Trophy className="w-6 h-6 text-marigold-300" />
               </span>
-              <div>
+              <div className="min-w-0">
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest text-cyber-300">
                   Track {trackNumber} Digital Credential · Lesson {lessonIndex + 1}/{lessonCount}
                 </span>
-                <h3 className="mt-0.5 text-xl font-extrabold text-white">{badgeTitle}</h3>
+                <h3 className="mt-0.5 text-xl font-extrabold text-white break-words">{badgeTitle}</h3>
                 <p className="mt-0.5 text-xs text-ink-300">
                   Verified fluency milestone in {currentTrack.title}
                 </p>
@@ -269,11 +271,11 @@ export default function LessonPlayer({
           className="tile-pop w-full flex items-center gap-3 p-4 rounded-2xl border-2 border-brand-200 bg-brand-50 text-left cursor-pointer"
         >
           <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-brand-600 text-white shrink-0"><Layers3 className="w-5 h-5"/></span>
-          <span className="flex-1">
+          <span className="flex-1 min-w-0">
             <span className="block text-[15px] font-bold text-ink">Lock it in: review the {deck.length} key terms</span>
             <span className="block text-sm text-ink-600">Tap-to-flip flashcards. Come back to them any time from the header.</span>
           </span>
-          <ArrowRight className="w-5 h-5 text-brand-600"/>
+          <ArrowRight className="w-5 h-5 text-brand-600 shrink-0"/>
         </button>
       )}
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
@@ -282,7 +284,7 @@ export default function LessonPlayer({
         </button>
         {prevLesson && (
           <Link href={lessonHref(prevLesson.id)} className="inline-flex items-center gap-1.5 text-ink-600">
-            <ArrowLeft className="w-4 h-4"/> Previous: {prevLesson.title}
+            <ArrowLeft className="w-4 h-4 shrink-0"/> <span className="truncate">Previous: {prevLesson.title}</span>
           </Link>
         )}
       </div>
@@ -292,16 +294,16 @@ export default function LessonPlayer({
   const finishLink = nextLesson ? (
     <Link
       href={lessonHref(nextLesson.id)}
-      className="btn-pop flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white text-[17px] font-bold hover:bg-brand-700"
+      className="btn-pop flex-1 min-w-0 min-h-12 sm:min-h-14 px-4 sm:px-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white text-[15px] sm:text-[17px] font-bold hover:bg-brand-700"
     >
       <span className="truncate">Next: {nextLesson.title}</span> <ArrowRight className="w-5 h-5 shrink-0"/>
     </Link>
   ) : (
     <Link
       href="/#curriculum"
-      className="btn-pop flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white text-[17px] font-bold hover:bg-brand-700"
+      className="btn-pop flex-1 min-w-0 min-h-12 sm:min-h-14 px-4 sm:px-5 inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-600 text-white text-[15px] sm:text-[17px] font-bold hover:bg-brand-700"
     >
-      Track done! Back to the course map <ArrowRight className="w-5 h-5 shrink-0"/>
+      <span className="truncate">Track done! Back to the course map</span> <ArrowRight className="w-5 h-5 shrink-0"/>
     </Link>
   );
 
@@ -309,7 +311,7 @@ export default function LessonPlayer({
   if (onePage) {
     return (
       <GlossaryProvider>
-        <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 pb-16 space-y-6">
+        <main className="flex-1 w-full max-w-2xl mx-auto px-3.5 sm:px-6 py-6 sm:py-8 pb-16 space-y-6 min-w-0">
           <div className="flex items-center justify-between gap-3">
             <button
               type="button"
@@ -322,10 +324,10 @@ export default function LessonPlayer({
           </div>
           {intro}
           {steps.map((s, i) =>
-            s.kind === "content" ? <div key={s.key}>{s.node}</div> : s.kind === "quiz" ? <div key={`quiz-${i}`}>{renderQuiz(s.index)}</div> : null
+            s.kind === "content" ? <div key={s.key} className="min-w-0">{s.node}</div> : s.kind === "quiz" ? <div key={`quiz-${i}`} className="min-w-0">{renderQuiz(s.index)}</div> : null
           )}
           {doneScreen}
-          <div className="flex">{finishLink}</div>
+          <div className="flex min-w-0">{finishLink}</div>
         </main>
         {deckOpen && <LessonDeck cards={deck} lessonTitle={lesson.title} onClose={() => setDeckOpen(false)}/>}
       </GlossaryProvider>
@@ -345,42 +347,42 @@ export default function LessonPlayer({
 
   return (
     <GlossaryProvider>
-      <div className="sticky top-16 z-30 bg-paper/95 backdrop-blur-md border-b border-ink-200">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 h-12 flex items-center gap-3">
-          <Link href="/#curriculum" aria-label="Close lesson and go to the course map" className="p-1 -ml-1 text-ink-500 hover:text-ink">
+      <div className="sticky top-14 sm:top-16 z-30 w-full bg-paper/95 backdrop-blur-md border-b border-ink-200">
+        <div className="max-w-2xl mx-auto px-3 sm:px-6 h-12 flex items-center gap-2 sm:gap-3 min-w-0">
+          <Link href="/#curriculum" aria-label="Close lesson and go to the course map" className="p-1 -ml-1 text-ink-500 hover:text-ink shrink-0">
             <X className="w-5 h-5"/>
           </Link>
-          <div className="flex-1 flex gap-1" role="progressbar" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={step + 1}>
+          <div className="flex-1 min-w-0 flex gap-1" role="progressbar" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={step + 1}>
             {steps.map((s, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => goTo(i)}
                 aria-label={`Go to screen ${i + 1} of ${steps.length}`}
-                className={`h-2 flex-1 rounded-full transition-colors duration-300 cursor-pointer ${
+                className={`h-2 flex-1 min-w-0 rounded-full transition-colors duration-300 cursor-pointer ${
                   i < step ? "bg-brand-600" : i === step ? "bg-brand-400" : s.kind === "quiz" ? "bg-marigold-200" : "bg-ink-200"
                 }`}
               />
             ))}
           </div>
-          <span className="text-xs font-bold text-ink-500 tabular-nums">{step + 1}/{steps.length}</span>
+          <span className="text-[11px] sm:text-xs font-bold text-ink-500 tabular-nums shrink-0">{step + 1}/{steps.length}</span>
           {deck.length > 0 && <DeckButton count={deck.length} onClick={() => setDeckOpen(true)}/>}
         </div>
       </div>
 
-      <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 pt-6 pb-36">
-        <div key={step} className="step-in">
+      <main className="flex-1 w-full max-w-2xl mx-auto px-3.5 sm:px-6 pt-5 sm:pt-6 pb-32 sm:pb-36 min-w-0">
+        <div key={step} className="step-in min-w-0">
           {current.kind === "intro" && (
             <>
               {intro}
-              <div className="mt-7 grid grid-cols-3 gap-2">
+              <div className="mt-5 sm:mt-7 grid grid-cols-3 gap-2">
                 {[
                   { n: steps.length - 2, label: "bite-size screens" },
                   { n: activityCount, label: activityCount === 1 ? "hands-on activity" : "hands-on activities" },
                   { n: quizTotal, label: quizTotal === 1 ? "quick check" : "quick checks" },
                 ].map((stat) => (
-                  <div key={stat.label} className="p-3 rounded-2xl bg-white border border-ink-200 text-center">
-                    <p className="font-display text-2xl font-extrabold text-ink">{stat.n}</p>
+                  <div key={stat.label} className="p-2.5 sm:p-3 rounded-2xl bg-white border border-ink-200 text-center min-w-0">
+                    <p className="font-display text-xl sm:text-2xl font-extrabold text-ink">{stat.n}</p>
                     <p className="mt-0.5 text-[11px] font-semibold leading-tight text-ink-500">{stat.label}</p>
                   </div>
                 ))}
@@ -395,7 +397,7 @@ export default function LessonPlayer({
                     onClick={() => setDeckOpen(true)}
                     className="inline-flex items-center gap-1.5 py-1 text-left text-sm font-semibold text-brand-700 hover:text-brand-800 cursor-pointer"
                   >
-                    <Layers3 className="w-4 h-4 shrink-0"/> Want a head start? Flip through the {deck.length} key terms
+                    <Layers3 className="w-4 h-4 shrink-0"/> <span>Want a head start? Flip through the {deck.length} key terms</span>
                   </button>
                 )}
                 {canResume && (
@@ -412,7 +414,7 @@ export default function LessonPlayer({
                   onClick={() => setOnePage(true)}
                   className="inline-flex items-center gap-1.5 py-1 text-left text-sm font-semibold text-ink-500 hover:text-ink cursor-pointer"
                 >
-                  <Rows3 className="w-4 h-4 shrink-0"/> Prefer to scroll? See the whole lesson on one page
+                  <Rows3 className="w-4 h-4 shrink-0"/> <span>Prefer to scroll? See the whole lesson on one page</span>
                 </button>
               </div>
             </>
@@ -427,12 +429,12 @@ export default function LessonPlayer({
         className="fixed bottom-0 inset-x-0 z-40 bg-paper/95 backdrop-blur-md border-t border-ink-200"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 py-3 flex gap-3">
+        <div className="max-w-2xl mx-auto px-3.5 sm:px-6 py-2.5 sm:py-3 flex gap-2.5 sm:gap-3 min-w-0">
           {step > 0 && (
             <button
               onClick={() => goTo(step - 1)}
               aria-label="Previous screen"
-              className="tile-pop min-h-14 w-14 shrink-0 inline-flex items-center justify-center rounded-2xl border-2 border-ink-200 bg-white text-ink-700 hover:border-ink-300 cursor-pointer"
+              className="tile-pop min-h-12 sm:min-h-14 w-12 sm:w-14 shrink-0 inline-flex items-center justify-center rounded-2xl border-2 border-ink-200 bg-white text-ink-700 hover:border-ink-300 cursor-pointer"
             >
               <ArrowLeft className="w-5 h-5"/>
             </button>
@@ -443,13 +445,13 @@ export default function LessonPlayer({
             <button
               onClick={() => goTo(step + 1)}
               disabled={blocked}
-              className={`flex-1 min-h-14 px-5 inline-flex items-center justify-center gap-2 rounded-2xl text-[17px] font-bold ${
+              className={`flex-1 min-w-0 min-h-12 sm:min-h-14 px-4 sm:px-5 inline-flex items-center justify-center gap-2 rounded-2xl text-[15px] sm:text-[17px] font-bold ${
                 blocked
                   ? "bg-ink-100 text-ink-500 border-2 border-dashed border-ink-200 cursor-not-allowed"
                   : "btn-pop bg-brand-600 text-white hover:bg-brand-700 cursor-pointer"
               }`}
             >
-              {continueLabel} {!blocked && <ArrowRight className="w-5 h-5"/>}
+              <span className="truncate">{continueLabel}</span> {!blocked && <ArrowRight className="w-5 h-5 shrink-0"/>}
             </button>
           )}
         </div>

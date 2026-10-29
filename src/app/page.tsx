@@ -60,9 +60,9 @@ function TrackProgressRing({ done, total }: { done: number; total: number }) {
   const size = 54;
   const strokeWidth = 5;
   const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
+  const circumference = Number((2 * Math.PI * radius).toFixed(2));
   const ratio = total > 0 ? Math.min(1, done / total) : 0;
-  const dashOffset = circumference * (1 - ratio);
+  const dashOffset = Number((circumference * (1 - ratio)).toFixed(2));
   const finished = total > 0 && done === total;
 
   return (
@@ -153,7 +153,7 @@ export default function HomePage() {
 
   return (
     <GlossaryProvider>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden flex flex-col">
         <Navbar />
 
         {/* ---------- Hero ---------- */}
@@ -164,28 +164,28 @@ export default function HomePage() {
             <div className="absolute top-24 -right-20 w-80 h-80 rounded-full bg-neon-300/35 blur-3xl" />
           </div>
 
-          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 pb-12 text-center">
+          <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pt-10 sm:pt-20 pb-10 sm:pb-12 text-center">
             {pulseLesson && (
               <Link
                 href={lessonHref(pulseTrack.id, pulseLesson.id)}
-                className="inline-flex items-center gap-2 h-9 pl-1.5 pr-3.5 rounded-full bg-white/90 backdrop-blur-sm border border-cyber-400/60 shadow-[0_0_16px_-4px_rgba(0,229,255,0.4)] text-sm font-semibold text-ink-800 hover:border-neon-500 transition-all"
+                className="inline-flex items-center gap-2 min-h-9 py-1 pl-1.5 pr-3.5 rounded-full bg-white/90 backdrop-blur-sm border border-cyber-400/60 shadow-[0_0_16px_-4px_rgba(0,229,255,0.4)] text-xs sm:text-sm font-semibold text-ink-800 hover:border-neon-500 transition-all max-w-full"
               >
-                <span className="inline-flex items-center h-6 px-2.5 rounded-full bg-ink-950 text-cyber-300 text-xs font-extrabold uppercase tracking-wider">
+                <span className="inline-flex items-center h-6 px-2.5 rounded-full bg-ink-950 text-cyber-300 text-[11px] sm:text-xs font-extrabold uppercase tracking-wider shrink-0">
                   New
                 </span>
-                AI Pulse for {BI_WEEKLY_META.lastUpdated} is out
-                <ArrowRight className="w-4 h-4 text-cyber-600" />
+                <span className="truncate">AI Pulse for {BI_WEEKLY_META.lastUpdated} is out</span>
+                <ArrowRight className="w-4 h-4 text-cyber-600 shrink-0" />
               </Link>
             )}
 
-            <h1 className="mt-7 text-[clamp(2.6rem,9vw,5.25rem)] font-extrabold leading-[0.98] text-ink">
+            <h1 className="mt-6 sm:mt-7 text-[clamp(2.2rem,8.5vw,5.25rem)] font-extrabold leading-[1.02] sm:leading-[0.98] text-ink">
               Get fluent in AI
               <span className="block mt-2 font-serif font-normal italic tracking-normal bg-gradient-to-r from-brand-600 via-neon-600 to-cyber-600 bg-clip-text text-transparent">
                 without the jargon.
               </span>
             </h1>
 
-            <p className="mt-7 max-w-2xl mx-auto text-lg sm:text-xl text-ink-600 leading-relaxed">
+            <p className="mt-6 sm:mt-7 max-w-2xl mx-auto text-base sm:text-xl text-ink-600 leading-relaxed">
               Five-minute lessons that take you from{" "}
               <span className="text-ink font-semibold">
                 &ldquo;what&rsquo;s a <GlossaryInlineTerm term="token">token</GlossaryInlineTerm>?&rdquo;
@@ -193,24 +193,24 @@ export default function HomePage() {
               to holding your own with engineers. Built for India, packed with hands-on exercises, and free.
             </p>
 
-            <div className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5">
+            <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5">
               <Link
                 href={lessonHref(nextUp.track.id, nextUp.lesson.id)}
-                className="btn-cyber inline-flex items-center justify-center gap-2.5 min-h-14 px-7 rounded-2xl bg-ink-950 border-2 border-cyber-400 text-white text-[17px] font-extrabold hover:bg-brand-950 hover:border-neon-400"
+                className="btn-cyber inline-flex items-center justify-center gap-2.5 min-h-14 px-5 sm:px-7 rounded-2xl bg-ink-950 border-2 border-cyber-400 text-white text-base sm:text-[17px] font-extrabold hover:bg-brand-950 hover:border-neon-400"
               >
-                <Zap className="w-5 h-5 text-cyber-400 fill-cyber-400" />
+                <Zap className="w-5 h-5 text-cyber-400 fill-cyber-400 shrink-0" />
                 <span>{started ? "Continue where you left off" : "Start the first lesson"}</span>
-                <ArrowRight className="w-5 h-5 text-cyber-300" />
+                <ArrowRight className="w-5 h-5 text-cyber-300 shrink-0" />
               </Link>
               <a
                 href="#curriculum"
-                className="tile-pop inline-flex items-center justify-center gap-2 min-h-14 px-7 rounded-2xl bg-white border-2 border-ink-200 text-ink text-[17px] font-bold hover:border-neon-400 hover:shadow-[0_0_18px_-4px_rgba(168,85,247,0.35)] transition-all"
+                className="tile-pop inline-flex items-center justify-center gap-2 min-h-14 px-5 sm:px-7 rounded-2xl bg-white border-2 border-ink-200 text-ink text-base sm:text-[17px] font-bold hover:border-neon-400 hover:shadow-[0_0_18px_-4px_rgba(168,85,247,0.35)] transition-all"
               >
                 See all {allLessons.length} lessons
               </a>
             </div>
 
-            <dl className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
+            <dl className="mt-10 sm:mt-12 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
               {[
                 { value: allLessons.length, label: "bite-size lessons", accent: "border-cyber-300/60" },
                 { value: `${totalMinutes} min`, label: "zero to fluent", accent: "border-neon-300/60" },
@@ -219,10 +219,10 @@ export default function HomePage() {
               ].map((stat) => (
                 <div
                   key={stat.label}
-                  className={`p-4 rounded-2xl bg-white/85 backdrop-blur-sm border ${stat.accent} shadow-sm`}
+                  className={`p-3.5 sm:p-4 rounded-2xl bg-white/85 backdrop-blur-sm border ${stat.accent} shadow-sm`}
                 >
                   <dt className="sr-only">{stat.label}</dt>
-                  <dd className="font-display text-3xl font-extrabold text-ink tabular-nums">{stat.value}</dd>
+                  <dd className="font-display text-2xl sm:text-3xl font-extrabold text-ink tabular-nums">{stat.value}</dd>
                   <dd className="mt-0.5 text-xs font-semibold text-ink-500">{stat.label}</dd>
                 </div>
               ))}
@@ -232,14 +232,14 @@ export default function HomePage() {
 
         {/* ---------- 30-second taster (Interactive Quick Check) ---------- */}
         <section id="interactive-demo" className="px-4 sm:px-6 pb-16">
-          <div className="max-w-3xl mx-auto p-6 sm:p-9 rounded-[var(--radius-card)] bg-white border-2 border-ink-200 shadow-[var(--shadow-card)] relative overflow-hidden">
+          <div className="max-w-3xl mx-auto p-5 sm:p-9 rounded-[var(--radius-card)] bg-white border-2 border-ink-200 shadow-[var(--shadow-card)] relative overflow-hidden">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-cyber-400 via-brand-500 to-neon-500"
             />
             <div className="flex flex-wrap items-center justify-between gap-3">
               <span className="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-brand-700">
-                <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ink-950 text-cyber-300 border border-cyber-400/50">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-ink-950 text-cyber-300 border border-cyber-400/50 shrink-0">
                   <Lightbulb className="w-[18px] h-[18px]" />
                 </span>
                 Try it in 30 seconds · Interactive Demo
@@ -248,7 +248,7 @@ export default function HomePage() {
                 <Zap className="w-3.5 h-3.5 fill-marigold-400 text-marigold-400" /> +{demoLesson.xpReward} XP lesson
               </span>
             </div>
-            <h2 className="mt-4 text-3xl sm:text-4xl font-extrabold leading-tight text-ink">{demoLesson.title}</h2>
+            <h2 className="mt-4 text-2xl sm:text-4xl font-extrabold leading-tight text-ink">{demoLesson.title}</h2>
 
             {demoLesson.analogy && (
               <div className="mt-4 p-5 rounded-2xl bg-brand-50/70 border border-brand-200 text-[17px] leading-relaxed text-ink-800">
@@ -462,7 +462,7 @@ export default function HomePage() {
                 const target = track.lessons.find((lesson) => !completed.has(lesson.id)) ?? track.lessons[0];
                 const finished = total > 0 && done === total;
 
-                const shareUrl = typeof window !== "undefined" ? window.location.origin : "https://aifluency.in";
+                const shareUrl = "https://aifluency.in";
                 const shareSummary = `I earned the "${track.badgeName}" digital credential (${track.title}) on AI Fluency! 🚀`;
                 const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
                   shareUrl

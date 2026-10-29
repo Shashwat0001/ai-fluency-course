@@ -20,7 +20,7 @@ import { RichText } from "./Glossary";
 // The classic lesson sections. Each one is a self-contained card, so the
 // player can show them one per screen or all stacked on one page.
 
-const card = "p-6 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)]";
+const card = "p-5 sm:p-6 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)] min-w-0 break-words";
 
 function Label({ icon, children, tone = "brand" }: { icon: React.ReactNode; children: React.ReactNode; tone?: "brand" | "ink" | "light" }) {
   const tones = {
@@ -54,13 +54,13 @@ export function FastMovingNotice({ lastUpdated }: { lastUpdated: string }) {
 
 export function BigIdea({ bigIdea }: { bigIdea: Lesson["bigIdea"] }) {
   return (
-    <section className="relative overflow-hidden p-6 sm:p-7 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)]">
+    <section className="relative overflow-hidden p-5 sm:p-7 rounded-[var(--radius-card)] bg-white border border-ink-200 shadow-[var(--shadow-card)] min-w-0 break-words">
       <span aria-hidden="true" className="absolute inset-y-0 left-0 w-1.5 bg-gradient-to-b from-brand-500 to-marigold-400"/>
       <Label icon={<Sparkles/>}>The big idea</Label>
-      <h2 className="mt-4 text-[1.65rem] sm:text-3xl font-extrabold leading-[1.15] text-ink">
+      <h2 className="mt-4 text-[1.45rem] sm:text-3xl font-extrabold leading-[1.15] text-ink">
         <RichText text={bigIdea.headline} glossary={false}/>
       </h2>
-      <p className="mt-4 text-[17px] text-ink-600 leading-relaxed">
+      <p className="mt-4 text-[16px] sm:text-[17px] text-ink-600 leading-relaxed">
         <RichText text={bigIdea.explanation}/>
       </p>
     </section>
@@ -69,10 +69,10 @@ export function BigIdea({ bigIdea }: { bigIdea: Lesson["bigIdea"] }) {
 
 export function Analogy({ analogy }: { analogy: NonNullable<Lesson["analogy"]> }) {
   return (
-    <section className="p-6 sm:p-7 rounded-[var(--radius-card)] bg-brand-50 border border-brand-100">
+    <section className="p-5 sm:p-7 rounded-[var(--radius-card)] bg-brand-50 border border-brand-100 min-w-0 break-words">
       <Label icon={<Lightbulb/>}>Picture it like this</Label>
-      <h2 className="mt-4 text-2xl sm:text-[1.75rem] font-extrabold leading-tight text-ink">{analogy.title}</h2>
-      <p className="mt-4 text-[17px] leading-relaxed text-ink-800">
+      <h2 className="mt-4 text-xl sm:text-[1.75rem] font-extrabold leading-tight text-ink">{analogy.title}</h2>
+      <p className="mt-4 text-[16px] sm:text-[17px] leading-relaxed text-ink-800">
         <RichText text={analogy.metaphor}/>
       </p>
     </section>

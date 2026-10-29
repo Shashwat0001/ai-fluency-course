@@ -35,6 +35,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
   themeColor: "#fbfaf7",
 };
 
@@ -46,9 +48,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bricolage.variable} ${inter.variable} ${instrument.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${inter.variable} ${instrument.variable} h-full antialiased overflow-x-hidden`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full w-full max-w-[100vw] overflow-x-hidden flex flex-col">{children}</body>
     </html>
   );
 }

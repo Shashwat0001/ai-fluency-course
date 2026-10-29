@@ -20,10 +20,10 @@ export function LogoMark({ size = 36, className = "" }: { size?: number; classNa
 
 export default function Logo({ tagline = true }: { tagline?: boolean }) {
   return (
-    <span className="flex items-center gap-2.5">
-      <LogoMark className="shrink-0 transition-transform duration-200 group-hover:rotate-[-6deg] group-hover:scale-105"/>
-      <span className="flex flex-col leading-none">
-        <span className="font-display text-[19px] font-extrabold tracking-tight text-ink">
+    <span className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+      <LogoMark className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 transition-transform duration-200 group-hover:rotate-[-6deg] group-hover:scale-105"/>
+      <span className="flex flex-col leading-none min-w-0">
+        <span className="font-display text-[16px] sm:text-[19px] font-extrabold tracking-tight text-ink whitespace-nowrap">
           AI Fluency
         </span>
         {tagline && (
