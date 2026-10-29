@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Clock, Layers3, PartyPopper, RotateCcw, Rows3, X, Zap } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock, Layers3, PartyPopper, RotateCcw, Rows3, Share2, Trophy, X, Zap } from "lucide-react";
 import type { Lesson } from "@/data/types";
+import { CURRICULUM_TRACKS } from "@/data/curriculum";
 import { completeLesson } from "@/lib/progress";
 import ActivityBlock from "@/components/activities/ActivityBlock";
 import { CreatorStrip } from "@/components/CreatorCard";
 import { buildLessonDeck, DeckButton, LessonDeck } from "./LessonDeck";
 import QuizQuestionCard from "./QuizQuestionCard";
-import { GlossaryProvider, RichText } from "./Glossary";
+import { GlossaryDemoTrigger, GlossaryProvider, RichText } from "./Glossary";
 import {
   Analogy,
   AnalogyMap,
@@ -76,6 +77,7 @@ export default function LessonPlayer({
   trackNumber,
   lessonIndex,
   lessonCount,
+  trackLessons,
   prevLesson,
   nextLesson,
 }: {
@@ -84,20 +86,23 @@ export default function LessonPlayer({
   trackNumber: number;
   lessonIndex: number;
   lessonCount: number;
+  trackLessons?: LinkedLesson[];
   prevLesson: LinkedLesson | null;
   nextLesson: LinkedLesson | null;
 }) {
-  const [steps] = useState(() => buildSteps(lesson));
+  const steps = useMemo(() => buildSteps(lesson), [lesson]);
   const [step, setStep] = useState(0);
   const [onePage, setOnePage] = useState(false);
-  const [deck] = useState(() => buildLessonDeck(lesson));
+  const deck = useMemo(() => buildLessonDeck(lesson), [lesson]);
   const [deckOpen, setDeckOpen] = useState(false);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [solved, setSolved] = useState<Set<string>>(new Set());
+  const [copiedBadge, setCopiedBadge] = useState(false);
   const savedStep = useSyncExternalStore(noSubscribe, () => readSavedStep(lesson.id), () => null);
+  const currentTrack = useMemo(() => CURRICULUM_TRACKS.find((t) => t.id === trackId), [trackId]);
 
   const lastIndex = steps.length - 1;
-  const current = steps[step];
+  const current = steps[step] ?? steps[0];
   const quizTotal = lesson.quiz.length;
   const activityCount = lesson.activities?.length ?? 0;
   const canResume = savedStep !== null && savedStep > 0 && savedStep < lastIndex;
@@ -149,9 +154,29 @@ export default function LessonPlayer({
 
   const intro = (
     <header>
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-xs font-bold uppercase tracking-wider text-brand-700">
-        Track {trackNumber} · Lesson {lessonIndex + 1} of {lessonCount}
-      </span>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-50 text-xs font-bold uppercase tracking-wider text-brand-700">
+          Track {trackNumber} · Lesson {lessonIndex + 1} of {lessonCount}
+        </span>
+        {trackLessons && trackLessons.length > 1 && (
+          <div className="flex items-center gap-1 flex-wrap">
+            {trackLessons.map((item, idx) => (
+              <Link
+                key={item.id}
+                href={lessonHref(item.id)}
+                title={`Lesson ${idx + 1}: ${item.title}`}
+                className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold transition-colors ${
+                  idx === lessonIndex
+                    ? "bg-brand-600 text-white"
+                    : "bg-white border border-ink-200 text-ink-600 hover:border-brand-300 hover:text-brand-700"
+                }`}
+              >
+                {idx + 1}
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
       <h1 className="mt-4 text-[2.25rem] sm:text-5xl font-extrabold leading-[1.05] text-ink">{lesson.title}</h1>
       <p className="mt-3 text-lg sm:text-xl text-ink-600 leading-snug">{lesson.subtitle}</p>
       <div className="mt-5 flex flex-wrap items-center gap-2 text-xs font-bold">
@@ -168,6 +193,11 @@ export default function LessonPlayer({
   );
 
   const allSolved = solved.size === quizTotal;
+  const badgeTitle = currentTrack?.badgeName ?? "AI Fluency Credential";
+  const shareUrl = typeof window !== "undefined" ? window.location.origin : "https://aifluency.in";
+  const shareText = `Just completed "${lesson.title}" and progressed toward the ${badgeTitle} credential on AI Fluency! 🚀`;
+  const linkedInHref = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&summary=${encodeURIComponent(shareText)}`;
+
   const doneScreen = (
     <section className="space-y-6">
       <div className="relative overflow-hidden p-6 sm:p-7 rounded-[var(--radius-card)] bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-[var(--shadow-card)] [--rt-strong:#fff] [--rt-hl-text:var(--color-ink)]">
@@ -192,10 +222,49 @@ export default function LessonPlayer({
           </p>
         )}
       </div>
+
+      {/* Glowing Digital Certificate Badge + Share to LinkedIn */}
+      {currentTrack && (
+        <div className="relative overflow-hidden p-5 sm:p-6 rounded-[var(--radius-card)] bg-ink-950 text-white border border-cyber-400/50 badge-cyber-glow">
+          <div aria-hidden="true" className="pointer-events-none absolute -top-12 -right-12 w-40 h-40 rounded-full bg-cyber-500/20 blur-2xl" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-12 -left-12 w-40 h-40 rounded-full bg-neon-500/20 blur-2xl" />
+          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3.5">
+              <span className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-cyber-400/25 to-neon-500/25 border border-cyber-400/50 text-cyber-300 shrink-0 shadow-[0_0_16px_rgba(0,229,255,0.3)]">
+                <Trophy className="w-6 h-6 text-marigold-300" />
+              </span>
+              <div>
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-widest text-cyber-300">
+                  Track {trackNumber} Digital Credential · Lesson {lessonIndex + 1}/{lessonCount}
+                </span>
+                <h3 className="mt-0.5 text-xl font-extrabold text-white">{badgeTitle}</h3>
+                <p className="mt-0.5 text-xs text-ink-300">
+                  Verified fluency milestone in {currentTrack.title}
+                </p>
+              </div>
+            </div>
+            <a
+              href={linkedInHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => {
+                navigator.clipboard?.writeText(`${shareText} ${shareUrl}`).catch(() => {});
+                setCopiedBadge(true);
+                setTimeout(() => setCopiedBadge(false), 3000);
+              }}
+              className="btn-cyber inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-gradient-to-r from-cyber-500 to-neon-600 text-ink-950 font-extrabold text-xs uppercase tracking-wider hover:from-cyber-400 hover:to-neon-500 shrink-0 cursor-pointer"
+            >
+              {copiedBadge ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+              <span>{copiedBadge ? "Copied & Opening LinkedIn" : "Share to LinkedIn"}</span>
+            </a>
+          </div>
+        </div>
+      )}
       {lesson.sources && lesson.sources.length > 0 && <Sources sources={lesson.sources}/>}
       <CreatorStrip/>
       {deck.length > 0 && (
         <button
+          type="button"
           onClick={() => setDeckOpen(true)}
           className="tile-pop w-full flex items-center gap-3 p-4 rounded-2xl border-2 border-brand-200 bg-brand-50 text-left cursor-pointer"
         >
@@ -208,7 +277,7 @@ export default function LessonPlayer({
         </button>
       )}
       <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
-        <button onClick={() => goTo(1)} className="inline-flex items-center gap-1.5 text-ink-600 hover:text-ink cursor-pointer">
+        <button type="button" onClick={() => goTo(1)} className="inline-flex items-center gap-1.5 text-ink-600 hover:text-ink cursor-pointer">
           <RotateCcw className="w-4 h-4"/> Replay this lesson
         </button>
         {prevLesson && (
@@ -243,6 +312,7 @@ export default function LessonPlayer({
         <main className="flex-1 w-full max-w-2xl mx-auto px-4 sm:px-6 py-8 pb-16 space-y-6">
           <div className="flex items-center justify-between gap-3">
             <button
+              type="button"
               onClick={() => setOnePage(false)}
               className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-600 cursor-pointer"
             >
@@ -282,9 +352,12 @@ export default function LessonPlayer({
           </Link>
           <div className="flex-1 flex gap-1" role="progressbar" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={step + 1}>
             {steps.map((s, i) => (
-              <span
+              <button
                 key={i}
-                className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Go to screen ${i + 1} of ${steps.length}`}
+                className={`h-2 flex-1 rounded-full transition-colors duration-300 cursor-pointer ${
                   i < step ? "bg-brand-600" : i === step ? "bg-brand-400" : s.kind === "quiz" ? "bg-marigold-200" : "bg-ink-200"
                 }`}
               />
@@ -313,30 +386,35 @@ export default function LessonPlayer({
                 ))}
               </div>
               <p className="mt-4 text-sm text-ink-600 leading-relaxed">
-                Stuck on a word? Tap anything <span className="glossary-term">underlined like this</span> for a plain-English meaning.
+                Stuck on a word? Tap anything <GlossaryDemoTrigger>underlined like this</GlossaryDemoTrigger> for a plain-English meaning.
               </p>
-              {deck.length > 0 && (
+              <div className="mt-3 flex flex-col items-start gap-2.5">
+                {deck.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setDeckOpen(true)}
+                    className="inline-flex items-center gap-1.5 py-1 text-left text-sm font-semibold text-brand-700 hover:text-brand-800 cursor-pointer"
+                  >
+                    <Layers3 className="w-4 h-4 shrink-0"/> Want a head start? Flip through the {deck.length} key terms
+                  </button>
+                )}
+                {canResume && (
+                  <button
+                    type="button"
+                    onClick={() => goTo(savedStep ?? 1)}
+                    className="tile-pop my-1 w-full p-4 rounded-2xl border-2 border-brand-200 bg-brand-50 text-left text-[15px] font-bold text-brand-700 cursor-pointer"
+                  >
+                    Welcome back! Pick up at screen {savedStep + 1} of {steps.length} →
+                  </button>
+                )}
                 <button
-                  onClick={() => setDeckOpen(true)}
-                  className="mt-3 inline-flex items-center gap-1.5 text-left text-sm font-semibold text-brand-700 hover:text-brand-800 cursor-pointer"
+                  type="button"
+                  onClick={() => setOnePage(true)}
+                  className="inline-flex items-center gap-1.5 py-1 text-left text-sm font-semibold text-ink-500 hover:text-ink cursor-pointer"
                 >
-                  <Layers3 className="w-4 h-4"/> Want a head start? Flip through the {deck.length} key terms
+                  <Rows3 className="w-4 h-4 shrink-0"/> Prefer to scroll? See the whole lesson on one page
                 </button>
-              )}
-              {canResume && (
-                <button
-                  onClick={() => goTo(savedStep ?? 1)}
-                  className="tile-pop mt-5 w-full p-4 rounded-2xl border-2 border-brand-200 bg-brand-50 text-left text-[15px] font-bold text-brand-700 cursor-pointer"
-                >
-                  Welcome back! Pick up at screen {savedStep + 1} of {steps.length} →
-                </button>
-              )}
-              <button
-                onClick={() => setOnePage(true)}
-                className="mt-4 inline-flex items-center gap-1.5 text-left text-sm font-semibold text-ink-500 hover:text-ink cursor-pointer"
-              >
-                <Rows3 className="w-4 h-4"/> Prefer to scroll? See the whole lesson on one page
-              </button>
+              </div>
             </>
           )}
           {current.kind === "content" && current.node}

@@ -44,3 +44,19 @@ export function subscribeToProgress(onChange: () => void) {
 export function getCompletedKey(): string {
   return Object.keys(readProgress()).sort().join(",");
 }
+
+/** Returns the first lessonId that has a saved step > 0 in localStorage, if any. */
+export function getInProgressLessonId(lessonIds: string[]): string | null {
+  try {
+    for (const id of lessonIds) {
+      const raw = window.localStorage.getItem(`ai-fluency-step:${id}`);
+      if (raw && Number(raw) > 0) {
+        return id;
+      }
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+

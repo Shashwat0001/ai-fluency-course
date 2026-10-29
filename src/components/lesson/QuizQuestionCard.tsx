@@ -20,6 +20,7 @@ export default function QuizQuestionCard({
   selected: number | undefined;
   onSelect: (index: number) => void;
 }) {
+  const [shakeCount, setShakeCount] = React.useState(0);
   const chosen = selected !== undefined ? question.options[selected] : undefined;
 
   return (
@@ -40,21 +41,31 @@ export default function QuizQuestionCard({
       <div className="space-y-3">
         {question.options.map((option, index) => {
           const isSelected = selected === index;
-          let style = "border-ink-200 bg-white hover:border-brand-300";
+          let style = "border-ink-200 bg-white hover:border-cyber-400 hover:bg-cyber-50/40";
           if (isSelected) {
-            style = option.isCorrect ? "border-mint-500 bg-mint-50" : "border-coral-400 bg-coral-50";
+            style = option.isCorrect
+              ? "border-mint-500 bg-mint-50 shadow-[0_0_20px_-4px_rgba(18,180,124,0.45)]"
+              : "border-coral-400 bg-coral-50 animate-shake";
           }
 
           return (
             <button
-              key={option.id}
-              onClick={() => onSelect(index)}
-              className={`tile-pop w-full min-h-14 text-left px-4 py-3.5 rounded-2xl border-2 flex items-center justify-between gap-4 cursor-pointer ${style}`}
+              key={`${option.id}-${isSelected && !option.isCorrect ? shakeCount : 0}`}
+              type="button"
+              onClick={() => {
+                if (!option.isCorrect) setShakeCount((c) => c + 1);
+                onSelect(index);
+              }}
+              className={`tile-pop w-full min-h-14 text-left px-4 py-3.5 rounded-2xl border-2 flex items-center justify-between gap-4 cursor-pointer transition-all ${style}`}
             >
               <span className="flex items-start gap-3">
                 <span
                   className={`mt-0.5 inline-flex items-center justify-center w-6 h-6 shrink-0 rounded-md border-2 text-xs font-bold uppercase ${
-                    isSelected ? (option.isCorrect ? "border-mint-500 text-mint-700" : "border-coral-400 text-coral-600") : "border-ink-200 text-ink-500"
+                    isSelected
+                      ? option.isCorrect
+                        ? "border-mint-500 bg-mint-500 text-white"
+                        : "border-coral-400 bg-coral-500 text-white"
+                      : "border-ink-200 text-ink-500"
                   }`}
                 >
                   {option.id}
@@ -63,7 +74,7 @@ export default function QuizQuestionCard({
               </span>
               {isSelected &&
                 (option.isCorrect ? (
-                  <CheckCircle2 className="w-6 h-6 text-mint-500 shrink-0"/>
+                  <CheckCircle2 className="w-6 h-6 text-mint-600 shrink-0"/>
                 ) : (
                   <XCircle className="w-6 h-6 text-coral-500 shrink-0"/>
                 ))}

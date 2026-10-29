@@ -47,6 +47,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         trackNumber={track.number}
         lessonIndex={lessonIndex}
         lessonCount={track.lessons.length}
+        trackLessons={track.lessons.map((l) => ({ id: l.id, title: l.title }))}
         prevLesson={prev ? { id: prev.id, title: prev.title } : null}
         nextLesson={next ? { id: next.id, title: next.title } : null}
       />
